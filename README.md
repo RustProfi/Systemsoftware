@@ -1,4 +1,4 @@
-# SystemSoftware Homework Results Repository
+# SystemSoftware Homework grp5 Repository
 
 Please consult the [HTWG SYSLAB SYSO Introduction](https://htwg-syslab-syso.github.io/) to get started.
 
