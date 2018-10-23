@@ -1,0 +1,17 @@
+git clone git@github:Gabri312/syso-ws18-syso-ws18-grp5.git
+git remote add template git@github.com:htwg-syslab-syso/syso-template.git
+git fetch template
+git merge template/master
+git checkout -b hw0
+git push
+git checkout -b hw0-Gabri312
+git push
+vim README.md
+:%s/Results/grp5/g
+git add README.md
+git commit -m"+- Change README.md"
+git checkout hw0
+git add Gabri312.log
+git commit -m"++ ADD Gabri312.log"
+
+
