@@ -4,14 +4,20 @@ git fetch template
 git merge template/master
 git checkout -b hw0
 git push
+git push --set-upstream origin hw0
 git checkout -b hw0-Gabri312
+git push --set-upstream origin hw0-Gabri312
 git push
 vim README.md
 :%s/Results/grp5/g
 git add README.md
+git config --global user.email "gabriel.cmiel@htwg-konstanz.de"
+git config --global user.name "Gabri312"
 git commit -m"+- Change README.md"
+git push
 git checkout hw0
 git add Gabri312.log
 git commit -m"++ ADD Gabri312.log"
+git push
 
 
