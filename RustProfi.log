@@ -1,0 +1,12 @@
+git clone git@github.com:RustProfi/syso-ws18-syso-ws18-grp5.git
+cd syso-ws18-syso-ws18-grp5/
+git checkout -b hw0
+git push --set-upstream origin hw0
+git checkout -b hw0-RustProfi
+git push --set-upstream origin hw0-RustProfi
+vim README.md
+git checkout hw0
+git add README.md 
+git add RustProfi.log
+git commit -m "add README and LOG"
+git push origin
