@@ -8,5 +8,7 @@ vim README.md
 git checkout hw0
 git add README.md 
 git add RustProfi.log
+git config --global user.email "janetzkymarno@gmail.com"
+git config --global user.name "Marno Janetzky"
 git commit -m "add README and LOG"
 git push origin
