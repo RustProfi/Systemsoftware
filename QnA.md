@@ -10,4 +10,4 @@
 ##Which tools are able to display the dynamic dependencies for binaries on Linux?
 file, ldd
 ##What is the practical problem with dynamic linking when you want to install your program on a different system, e.g. a Virtual Machine?
-
+The loader searches for shared libraries in predefined system directories. Generally this means that they aren't very portable which is very important when copying the programm to other OSes
