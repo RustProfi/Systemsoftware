@@ -6,7 +6,7 @@
 ..* hardware platform
 ..* OS
 ##How can you instruct gcc to produce statically linked binaries?
-
+gcc -static getsysinfo.c -o getsysinfo.o
 ##Which tools are able to display the dynamic dependencies for binaries on Linux?
 file, ldd
 ##What is the practical problem with dynamic linking when you want to install your program on a different system, e.g. a Virtual Machine?
