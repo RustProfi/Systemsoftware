@@ -24,10 +24,29 @@ user	- 4m 2,701s (CPU time in user mode)
 sys 	- 0m 20,249s (CPU time spent in the kernel)
 ## Where and which are the output binary files produced by the compilation?
 The binary files are produced in the arch/x86/boot/ folder
-a20.o|bioscall.o|cmdline.o|copy.o|cpucheck.o
-cpuflags.c|cpu.o|early_serial_console.o|edd.o|header.o
-main.o|memory.o|pmjump.o|pm.o|printf.o
-regs.o|string.o|tty.o|version.o|video-bios.o
-video-mode.o|video.o|video-vesa.o|video-vga.o
+a20.o
+bioscall.o
+cmdline.o
+copy.o
+cpucheck.o
+cpuflags.c
+cpu.o
+early_serial_console.o
+edd.o
+header.o
+main.o
+memory.o
+pmjump.o
+pm.o
+printf.o
+regs.o
+string.o
+tty.o
+version.o
+video-bios.o
+video-mode.o
+video.o
+video-vesa.o
+video-vga.o
 ## Which is the binary that represents bootable kernel image?
 bzImage
