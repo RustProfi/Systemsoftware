@@ -50,3 +50,7 @@ video-vesa.o
 video-vga.o
 ## Which is the binary that represents bootable kernel image?
 bzImage
+## Which TTY-device do you need to pass to the kernel for console input/output?
+start quemu with 
+qemu-system-x86_64 -m 64 -nographic -kernel ~/syso/syso-ws18-syso-ws18-grp5/linux-4.11/arch/x86/boot/bzImage -append 'console=ttyS0' -initrd ~/syso/syso-ws18-syso-ws18-grp5/initrd/disk.img 
+so the device is ttyS0.
