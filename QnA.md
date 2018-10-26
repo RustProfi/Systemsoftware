@@ -54,3 +54,6 @@ bzImage
 start quemu with 
 qemu-system-x86_64 -m 64 -nographic -kernel ~/syso/syso-ws18-syso-ws18-grp5/linux-4.11/arch/x86/boot/bzImage -append 'console=ttyS0' -initrd ~/syso/syso-ws18-syso-ws18-grp5/initrd/disk.img 
 so the device is ttyS0.
+## Is the system in a usable state, e.g. can you use a shell to execute commands on it?
+## If not, what is missing?
+
