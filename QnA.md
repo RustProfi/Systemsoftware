@@ -56,3 +56,4 @@ With console=ttyS0 you select the first serial port.
 No
 ## If not, what is missing?
 We're missing a working init
+
