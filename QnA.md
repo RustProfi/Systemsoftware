@@ -51,6 +51,8 @@ video-vga.o
 ## Which is the binary that represents bootable kernel image?
 bzImage
 ## Which TTY-device do you need to pass to the kernel for console input/output?
-start quemu with 
-qemu-system-x86_64 -m 64 -nographic -kernel ~/syso/syso-ws18-syso-ws18-grp5/linux-4.11/arch/x86/boot/bzImage -append 'console=ttyS0' -initrd ~/syso/syso-ws18-syso-ws18-grp5/initrd/disk.img 
-so the device is ttyS0.
+With console=ttyS0 you select the first serial port.
+## Is the system in a usable state, e.g. can you use a shell to execute commands on it?
+No
+## If not, what is missing?
+We're missing a working init
