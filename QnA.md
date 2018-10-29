@@ -65,6 +65,9 @@ From Help: -t lists the contents. Usage: cpio -t < initrd-sysinfo.cpio
 ## What needs to be passed to the kernel within append in order to tell it what binary to execute?
 init=getsysinfo.o
 ## What is the default executable path of the kernel in case nothing is passed to change it?
-
+/sbin/init
+/etc/init
+/bin/init
+/bin/sh lastly tries borne again shell
 ## What is the complete qemu command line to run your sysinfo application as the init process?
 qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=ttyS0 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
