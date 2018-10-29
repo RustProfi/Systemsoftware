@@ -56,4 +56,15 @@ With console=ttyS0 you select the first serial port.
 No
 ## If not, what is missing?
 We're missing a working init
+## What could the -L parameter be useful for?
+From the help: "Dereference  symbolic  links  (copy  the files that they point to instead of copying the links)."
+## How can you list the contents of a CPIO archive?
+From Help: -t lists the contents. Usage: cpio -t < initrd-sysinfo.cpio
+## What is the path of program that the kernel can execute after unpacking it?
+/ in the root directory
+## What needs to be passed to the kernel within append in order to tell it what binary to execute?
+init=getsysinfo.o
+## What is the default executable path of the kernel in case nothing is passed to change it?
 
+## What is the complete qemu command line to run your sysinfo application as the init process?
+qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=ttyS0 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
