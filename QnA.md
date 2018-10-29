@@ -71,3 +71,22 @@ init=getsysinfo.o
 /bin/sh lastly tries borne again shell
 ## What is the complete qemu command line to run your sysinfo application as the init process?
 qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=ttyS0 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
+## How do multi-call binaries work?
+Multi-call binaries are a single binary that acts like a large number of utilities
+## What applets are needed to allow us to interact with the system?
+script
+vi
+clear
+cpio
+free
+ash
+hostname
+less
+ls
+man
+uname
+mount
+mkdir
+echo
+cat
+## How are symlinks to these binaries interpreted?
