@@ -51,6 +51,23 @@ video-vga.o
 ## Which is the binary that represents bootable kernel image?
 bzImage
 ## Which TTY-device do you need to pass to the kernel for console input/output?
-start quemu with 
-qemu-system-x86_64 -m 64 -nographic -kernel ~/syso/syso-ws18-syso-ws18-grp5/linux-4.11/arch/x86/boot/bzImage -append 'console=ttyS0' -initrd ~/syso/syso-ws18-syso-ws18-grp5/initrd/disk.img 
-so the device is ttyS0.
+With console=ttyS0 you select the first serial port.
+## Is the system in a usable state, e.g. can you use a shell to execute commands on it?
+No
+## If not, what is missing?
+We're missing a working init
+## What could the -L parameter be useful for?
+From the help: "Dereference  symbolic  links  (copy  the files that they point to instead of copying the links)."
+## How can you list the contents of a CPIO archive?
+From Help: -t lists the contents. Usage: cpio -t < initrd-sysinfo.cpio
+## What is the path of program that the kernel can execute after unpacking it?
+/ in the root directory
+## What needs to be passed to the kernel within append in order to tell it what binary to execute?
+init=getsysinfo.o
+## What is the default executable path of the kernel in case nothing is passed to change it?
+/sbin/init
+/etc/init
+/bin/init
+/bin/sh lastly tries borne again shell
+## What is the complete qemu command line to run your sysinfo application as the init process?
+qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=ttyS0 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
