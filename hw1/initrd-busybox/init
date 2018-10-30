@@ -1,2 +1,4 @@
 #!/bin/busybox ash
-busybox ls
+/bin/busybox --install -s
+busybox mkdir sys proc tmp
+busybox ash
