@@ -74,19 +74,25 @@ qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage 
 ## How do multi-call binaries work?
 Multi-call binaries are a single binary that acts like a large number of utilities
 ## What applets are needed to allow us to interact with the system?
-script
-vi
-clear
-cpio
-free
 ash
-hostname
-less
-ls
-man
-uname
-mount
-mkdir
-echo
-cat
 ## How are symlinks to these binaries interpreted?
+The utility can be run using the utility name as a symbolic link without the busybox prefix.
+## Does your busybox file have dynamic link dependencies against libraries installed on the build host?
+yes linux-vdso.so & lib.c
+## How can you verify this on the command line?
+ldd /Path_to_busybox/busybox
+What busybox options have you chosen for your new initrd, and why?
+script - Run getsysinfo programm
+vi - Edit programm
+clear - Clear screen
+cpio - Extract our cpio archive if needed
+less - View a file
+ls - List directory contents
+man - Man Pages
+uname - Check getsysinfo program
+free - Check getsysinfo program (used system memory)
+hostname Check getsysinfo (hostname)
+mount - Mount filesystem
+mkdir - Create filesystem
+echo - Print arg to stdout
+cat - Print file to stdout
