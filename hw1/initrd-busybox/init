@@ -1,4 +1,8 @@
 #!/bin/busybox ash
 /bin/busybox --install -s
-busybox mkdir sys proc tmp
+mkdir sys proc tmp usr
+busybox mount -t devtmpfs devtmpfs /dev
+busybox mount -t sysfs sysfs /sys
+busybox mount -t proc procfs /proc
+busybox mount -t tmpfs tmpfs /tmp 
 busybox ash
