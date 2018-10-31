@@ -53,6 +53,7 @@ cd $BASEDIR
 rm -r buildarea
 rm initrd-sysinfo/bin/getsysinfo
 rm initrd-busybox/bin/busybox
+rm initrd-busybox/bin/getsysinfo
 rm -r artifacts
 }
 
