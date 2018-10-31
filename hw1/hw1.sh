@@ -1,4 +1,10 @@
-build_kernelandbusybox()
+
+#!/bin/bash
+# wo arguments build all artifacts
+# argument qemu_sysinfo
+#argumen qemu_busybox
+# argument clean
+qemu_sysinfo()
 {
 mkdir ~/hw1/buildarea
 cd ~/hw1/buildarea
@@ -25,3 +31,25 @@ cp getsysinfo ~/hw1/artifacts
 rm -r ~/hw1/buildarea
 #cpio files noch bauen
 }
+
+usage()
+{
+	echo "usage: hw1 [[] | [qemu_sysinfo] | [qemu_busybox] | [clean]]"
+}
+
+
+if ["$1" == ""]; then
+	echo "Building all artifacts"
+	qemu_sysinfo	
+else
+	case $1 in
+		"qemu_sysinfo")	echo test
+				;;
+		"qemu_busybox")	echo test2
+				;;
+		"clean")	echo test3
+				;;
+		* )		usage
+				exit 1
+	esac
+fi
