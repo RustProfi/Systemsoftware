@@ -108,4 +108,39 @@ sysfs /sys sysfs rw,relatime 0 0
 procfs /proc proc rw,relatime 0 0
 tmpfs /tmp tmpfs rw,relatime 0 0
 ## How does the filetree under / look after the system is booted?
+command: find -xdev
+.
+./sbin
+./sbin/poweroff
+./usr
+./usr/bin
+./usr/bin/script
+./usr/bin/man
+./usr/bin/less
+./usr/bin/install
+./usr/bin/free
+./usr/bin/find
+./usr/bin/clear
+./tmp
+./proc
+./sys
+./bin
+./bin/vi
+./bin/uname
+./bin/sh
+./bin/mount
+./bin/mkdir
+./bin/ls
+./bin/ln
+./bin/hostname
+./bin/echo
+./bin/cpio
+./bin/cat
+./bin/ash
+./bin/busybox
+./bin/getsysinfo
+./init
+./.init.swp
+./root
+./dev
 
