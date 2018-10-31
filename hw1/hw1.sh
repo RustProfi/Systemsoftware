@@ -79,7 +79,7 @@ else
 				;;
 		"qemu_busybox")	qemu_busybox
 				;;
-		"clean")	echo test3
+		"clean")	clean
 				;;
 		* )		usage
 				exit 1
