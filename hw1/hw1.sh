@@ -4,7 +4,7 @@
 # argument qemu_sysinfo
 #argumen qemu_busybox
 # argument clean
-qemu_sysinfo()
+build-artifacts()
 {
 mkdir ~/hw1/buildarea
 cd ~/hw1/buildarea
@@ -37,15 +37,24 @@ usage()
 	echo "usage: hw1 [[] | [qemu_sysinfo] | [qemu_busybox] | [clean]]"
 }
 
+qemu_sysinfo()
+{
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=getsysinfo" -initrd ./artifacts/initrd-getsysinfo.cpio
+}
+
+qemu_busybox()
+{
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd-busybox.cpio
+}
 
 if ["$1" == ""]; then
 	echo "Building all artifacts"
-	qemu_sysinfo	
+	build_artifacts	
 else
 	case $1 in
-		"qemu_sysinfo")	echo test
+		"qemu_sysinfo")	qemu_sysinfo
 				;;
-		"qemu_busybox")	echo test2
+		"qemu_busybox")	qemu_busybox
 				;;
 		"clean")	echo test3
 				;;
