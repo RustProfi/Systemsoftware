@@ -72,7 +72,7 @@ qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=
 
 if ["$1" == ""]; then
 	echo "Building all artifacts"
-	build_artifacts	
+	build-artifacts
 else
 	case $1 in
 		"qemu_sysinfo")	qemu_sysinfo
