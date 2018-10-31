@@ -3,7 +3,7 @@
 # argument qemu_sysinfo
 #argumen qemu_busybox
 # argument clean
-build_kernelandbusybox()
+qemu_sysinfo()
 {
 mkdir ~/hw1/buildarea
 cd ~/hw1/buildarea
@@ -39,7 +39,8 @@ usage()
 
 
 if ["$1" == ""]; then
-	echo "build all artifacts"
+	echo "Building all artifacts"
+	qemu_sysinfo	
 else
 	case $1 in
 		"qemu_sysinfo")	echo test
