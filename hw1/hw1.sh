@@ -6,16 +6,19 @@
 # argument clean
 build-artifacts()
 {
-mkdir ~/hw1/buildarea
-cd ~/hw1/buildarea
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+
+mkdir buildarea
+cd buildarea
 
 wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
 tar xf linux-4.11.tar.xz
 wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
 tar xvjf busybox-1.26.2.tar.bz2
 
-cp ../kernel/.config linux-4.11
-cp ../busybox/.config busybox-1.26.2
+cp ../linux-4.11/.config linux-4.11
+cp ../busybox-1.26.2/.config busybox-1.26.2
 
 cd linux-4.11
 make -j5
@@ -24,12 +27,21 @@ make -j5
 cd ..
 mkdir ../artifacts
 cp linux-4.11/arch/x86/boot/bzImage ../artifacts
-cp busybox-1.26.2/busybox ../artifacts
+cp busybox-1.26.2/busybox ../initrd-busybox/bin
 cd ../sysinfo/src
 make
-cp getsysinfo ~/hw1/artifacts
-rm -r ~/hw1/buildarea
-#cpio files noch bauen
+cp getsysinfo ../../initrd-busybox/bin
+cp getsysinfo ../../initrd-sysinfo/bin
+cd ../../
+
+cd initrd-sysinfo
+echo $PWD
+find | cpio -L -v -o -H newc > ../artifacts/initrd-sysinfo.cpio
+
+cd ../initrd-busybox
+echo $PWD
+find | cpio -L -v -o -H newc > ../artifacts/initrd-busybox.cpio
+
 }
 
 usage()
