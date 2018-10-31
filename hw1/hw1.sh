@@ -44,6 +44,17 @@ find | cpio -L -v -o -H newc > ../artifacts/initrd-busybox.cpio
 
 }
 
+clean()
+{
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+
+rm -r buildarea
+rm initrd-sysinfo/bin/getsysinfo
+rm initrd-busybox/bin/busybox
+rm -r artifacts
+}
+
 usage()
 {
 	echo "usage: hw1 [[] | [qemu_sysinfo] | [qemu_busybox] | [clean]]"
