@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # wo arguments build all artifacts
 # argument qemu_sysinfo
@@ -31,7 +32,6 @@ rm -r ~/hw1/buildarea
 #cpio files noch bauen
 }
 
-
 usage()
 {
 	echo "usage: hw1 [[] | [qemu_sysinfo] | [qemu_busybox] | [clean]]"
@@ -53,4 +53,3 @@ else
 				exit 1
 	esac
 fi
-
