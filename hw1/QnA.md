@@ -51,7 +51,7 @@ video-vga.o
 ## Which is the binary that represents bootable kernel image?
 bzImage
 ## Which TTY-device do you need to pass to the kernel for console input/output?
-With console=ttyS0 you select the first serial port.
+With console=ttyS0 you select the first serial port.console=8250 and console=16550 also work because we enabled the serial support in the kernel config
 ## Is the system in a usable state, e.g. can you use a shell to execute commands on it?
 No
 ## If not, what is missing?
@@ -70,7 +70,7 @@ init=getsysinfo.o
 /bin/init
 /bin/sh lastly tries borne again shell
 ## What is the complete qemu command line to run your sysinfo application as the init process?
-qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=ttyS0 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
+qemu-system-x86_64 -m 64 -nographic -kernel ~/$KERNEL_SRC/arch/x86/boot/bzImage -append 'console=8250 init=getsysinfo.o' -initrd ~/syso/syso-ws18-syso-ws18-grp5/bin/sysinfo/initrd-sysinfo.cpio
 ## How do multi-call binaries work?
 Multi-call binaries are a single binary that acts like a large number of utilities
 ## What applets are needed to allow us to interact with the system?
@@ -101,5 +101,11 @@ bin, usr, init, root, sbin, usr/bin
 ## Which directoreis need to be created to be compliant with the Linux FHS 3.0
 bin, boot, dev, etc, lib, media, mnt, opt, run,sbin,srv, tmp, usr, var
 ## What are all the mounts/filesystems that are active after the system has booted?
+command: cat proc/mounts
+rootfs / rootfs rw 0 0
+devtmpfs /dev devtmpfs rw,relatime,mode=0755 0 0
+sysfs /sys sysfs rw,relatime 0 0
+procfs /proc proc rw,relatime 0 0
+tmpfs /tmp tmpfs rw,relatime 0 0
 ## How does the filetree under / look after the system is booted?
 
