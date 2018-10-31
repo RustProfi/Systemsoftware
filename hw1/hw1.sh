@@ -30,6 +30,7 @@ cp linux-4.11/arch/x86/boot/bzImage ../artifacts
 cp busybox-1.26.2/busybox ../initrd-busybox/bin
 cd ../sysinfo/src
 make
+chmod +x getsysinfo
 cp getsysinfo ../../initrd-busybox/bin
 cp getsysinfo ../../initrd-sysinfo/bin
 cd ../../
