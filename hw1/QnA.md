@@ -96,3 +96,10 @@ mount - Mount filesystem
 mkdir - Create filesystem
 echo - Print arg to stdout
 cat - Print file to stdout
+## Which aditional directories are required to make the system work at runtime?
+bin, usr, init, root, sbin, usr/bin
+## Which directoreis need to be created to be compliant with the Linux FHS 3.0
+bin, boot, dev, etc, lib, media, mnt, opt, run,sbin,srv, tmp, usr, var
+## What are all the mounts/filesystems that are active after the system has booted?
+## How does the filetree under / look after the system is booted?
+
