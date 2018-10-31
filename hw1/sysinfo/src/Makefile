@@ -1,6 +1,8 @@
 CC=gcc
 CFLAGS=-static
-getsysinfo: getsysinfo.o
+
+getsysinfomake: getsysinfo.c
+	$(CC) $(CFLAGS) getsysinfo.c -o getsysinfo
 
 clean:
-	rm -f getsysinfo.o
+	rm -f getsysinfo.o getsysinfo
