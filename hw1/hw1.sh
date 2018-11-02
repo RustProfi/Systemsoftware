@@ -1,9 +1,9 @@
-
 #!/bin/bash
 # wo arguments build all artifacts
 # argument qemu_sysinfo
 #argumen qemu_busybox
 # argument clean
+
 build-artifacts()
 {
 BASEDIR=$(dirname "$0")
@@ -30,8 +30,9 @@ cp linux-4.11/arch/x86/boot/bzImage ../artifacts
 cp busybox-1.26.2/busybox ../initrd-busybox/bin
 cd ../sysinfo/src
 make
-cp getsysinfo ../../initrd-busybox/bin
-cp getsysinfo ../../initrd-sysinfo/bin
+cp sysinfo ../../artifacts
+cp sysinfo ../../initrd-busybox/bin
+cp sysinfo ../../initrd-sysinfo/bin
 cd ../../
 
 cd initrd-sysinfo
@@ -50,9 +51,13 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 rm -r buildarea
-rm initrd-sysinfo/bin/getsysinfo
+rm initrd-sysinfo/bin/sysinfo
 rm initrd-busybox/bin/busybox
+rm initrd-busybox/bin/sysinfo
 rm -r artifacts
+rm -f linux-4.11.tar.xz
+rm -f busybox-1.26.2.tar.bz2
+rm -f sysinfo/src/sysinfo
 }
 
 usage()
@@ -62,7 +67,7 @@ usage()
 
 qemu_sysinfo()
 {
-qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=getsysinfo" -initrd ./artifacts/initrd-getsysinfo.cpio
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=bin/sysinfo" -initrd ./artifacts/initrd-sysinfo.cpio
 }
 
 qemu_busybox()
@@ -70,16 +75,16 @@ qemu_busybox()
 qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd-busybox.cpio
 }
 
-if ["$1" == ""]; then
+if [ "$1" == "" ]; then
 	echo "Building all artifacts"
-	build_artifacts	
+	build-artifacts
 else
 	case $1 in
-		"qemu_sysinfo")	qemu_sysinfo
+		"qemu_sysinfo" )	qemu_sysinfo
 				;;
-		"qemu_busybox")	qemu_busybox
+		"qemu_busybox" )	qemu_busybox
 				;;
-		"clean")	clean
+		"clean" )	clean
 				;;
 		* )		usage
 				exit 1
