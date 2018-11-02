@@ -5,5 +5,5 @@ busybox mount -t devtmpfs devtmpfs /dev
 busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
 busybox mount -t tmpfs tmpfs /tmp 
-./bin/getsysinfo
+./bin/sysinfo
 busybox ash
