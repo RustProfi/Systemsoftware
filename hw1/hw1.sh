@@ -50,7 +50,7 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 rm -r buildarea
-rm initrd-sysinfo/bin/getsysinfo
+rm initrd-sysinfo/bin/sysinfo
 rm initrd-busybox/bin/busybox
 rm -r artifacts
 }
@@ -62,7 +62,7 @@ usage()
 
 qemu_sysinfo()
 {
-qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=getsysinfo" -initrd ./artifacts/initrd-getsysinfo.cpio
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=sysinfo" -initrd ./artifacts/initrd-sysinfo.cpio
 }
 
 qemu_busybox()
@@ -70,16 +70,16 @@ qemu_busybox()
 qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd-busybox.cpio
 }
 
-if ["$1" == ""]; then
+if [ "$1" == "" ]; then
 	echo "Building all artifacts"
 	build-artifacts
 else
 	case $1 in
-		"qemu_sysinfo")	qemu_sysinfo
+		"qemu_sysinfo" )	qemu_sysinfo
 				;;
-		"qemu_busybox")	qemu_busybox
+		"qemu_busybox" )	qemu_busybox
 				;;
-		"clean")	clean
+		"clean" )	clean
 				;;
 		* )		usage
 				exit 1
