@@ -30,9 +30,9 @@ cp linux-4.11/arch/x86/boot/bzImage ../artifacts
 cp busybox-1.26.2/busybox ../initrd-busybox/bin
 cd ../sysinfo/src
 make
-cp getsysinfo ../../artifacts
-cp getsysinfo ../../initrd-busybox/bin
-cp getsysinfo ../../initrd-sysinfo/bin
+cp sysinfo ../../artifacts
+cp sysinfo ../../initrd-busybox/bin
+cp sysinfo ../../initrd-sysinfo/bin
 cd ../../
 
 cd initrd-sysinfo
@@ -53,7 +53,7 @@ cd $BASEDIR
 rm -r buildarea
 rm initrd-sysinfo/bin/sysinfo
 rm initrd-busybox/bin/busybox
-rm initrd-busybox/bin/getsysinfo
+rm initrd-busybox/bin/sysinfo
 rm -r artifacts
 }
 
