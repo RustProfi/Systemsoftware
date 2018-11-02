@@ -1,9 +1,9 @@
-
 #!/bin/bash
 # wo arguments build all artifacts
 # argument qemu_sysinfo
 #argumen qemu_busybox
 # argument clean
+
 build-artifacts()
 {
 BASEDIR=$(dirname "$0")
@@ -30,6 +30,7 @@ cp linux-4.11/arch/x86/boot/bzImage ../artifacts
 cp busybox-1.26.2/busybox ../initrd-busybox/bin
 cd ../sysinfo/src
 make
+cp getsysinfo ../../artifacts
 cp getsysinfo ../../initrd-busybox/bin
 cp getsysinfo ../../initrd-sysinfo/bin
 cd ../../
@@ -52,6 +53,7 @@ cd $BASEDIR
 rm -r buildarea
 rm initrd-sysinfo/bin/sysinfo
 rm initrd-busybox/bin/busybox
+rm initrd-busybox/bin/getsysinfo
 rm -r artifacts
 }
 
@@ -62,7 +64,7 @@ usage()
 
 qemu_sysinfo()
 {
-qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=sysinfo" -initrd ./artifacts/initrd-sysinfo.cpio
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append "console=8250 init=bin/sysinfo" -initrd ./artifacts/initrd-sysinfo.cpio
 }
 
 qemu_busybox()
