@@ -57,6 +57,7 @@ rm initrd-busybox/bin/sysinfo
 rm -r artifacts
 rm -f linux-4.11.tar.xz
 rm -f busybox-1.26.2.tar.bz2
+rm -f sysinfo/src/sysinfo
 }
 
 usage()
