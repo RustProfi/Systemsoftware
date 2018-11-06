@@ -20,6 +20,22 @@ cd ../busybox-1.26.2
 make -j5
 }
 
+clean()
+{
+BASEDIR=$(dirname "$0")
+cd $BASEDIR
+
+rm -r linux-4.11
+rm -r busybox-1.26.2
+rm -f linux-4.11.tar.xz
+rm -f busybox-1.26.2.tar.bz2
+}
+
+usage()
+{
+	echo "usage: hw2 [[] | [qemu] | [clean] | [ssh_cmd cmd [args...]]]"
+}
+
 if [ "$1" == "" ]; then
 	echo "Building all artifacts"
 	build-artifacts
