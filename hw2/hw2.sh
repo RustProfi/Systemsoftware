@@ -24,7 +24,14 @@ make -j5
 
 cd ../dropbear-2016.74
 ./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx
-make STATIC=1
+sed -i 's/22/22222/g' options.h
+make STATIC=1 MULTI=1
+
+mkdir ../artifacts
+
+
+cd ../initrd
+find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
 
 
 }
@@ -36,8 +43,10 @@ cd $BASEDIR
 
 rm -r linux-4.11
 rm -r busybox-1.26.2
-rm -f linux-4.11.tar.xz
-rm -f busybox-1.26.2.tar.bz2
+rm  linux-4.11.tar.xz
+rm  busybox-1.26.2.tar.bz2
+rm -r dropbear-2016.74
+rm dropbear-2016.74.tar.bz2
 }
 
 usage()
