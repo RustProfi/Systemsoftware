@@ -59,12 +59,16 @@ usage()
 	echo "usage: hw2 [[] | [qemu] | [clean] | [ssh_cmd cmd [args...]]]"
 }
 
+qemu(){
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio
+}
+
 if [ "$1" == "" ]; then
 	echo "Building all artifacts"
 	build-artifacts
 else
 	case $1 in
-		"qemu" )	qemu_sysinfo
+		"qemu" )	qemu
 				;;
 		"clean" )	clean
 				;;
