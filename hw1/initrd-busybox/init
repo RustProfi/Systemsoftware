@@ -1,0 +1,9 @@
+#!/bin/busybox ash
+busybox mkdir sys proc tmp usr usr/bin/ sbin
+busybox /bin/busybox --install -s
+busybox mount -t devtmpfs devtmpfs /dev
+busybox mount -t sysfs sysfs /sys
+busybox mount -t proc procfs /proc
+busybox mount -t tmpfs tmpfs /tmp 
+./bin/getsysinfo
+busybox ash

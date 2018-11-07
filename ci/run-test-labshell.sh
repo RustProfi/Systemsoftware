@@ -1,4 +1,4 @@
-#!/usr/bin/env labshell
+#/usr/bin/env labshell
 #!/usr/bin/env bash
 #set -o xtrace
 
