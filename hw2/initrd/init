@@ -1,10 +1,11 @@
 #!/bin/busybox ash
-busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin dev/pts
+busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin
 busybox /bin/busybox --install -s
 busybox mount -t devtmpfs devtmpfs /dev
 busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
 busybox mount -t tmpfs tmpfs /tmp 
+mkdir dev/pts
 busybox mount -o bind dev/pts dev/pts
 
 ./bin/sysinfo
