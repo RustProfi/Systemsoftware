@@ -6,7 +6,13 @@ busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
 busybox mount -t tmpfs tmpfs /tmp 
 busybox mount -o bind dev/pts dev/pts
+
 ./bin/sysinfo
-#make install bin/dropbearmulti
+
+mkdir -pv etc/dropbear
+echo create ssh key
+bin/dropbearmulti dropbearkey -t rsa -s 4096 -f etc/dropbear/dropbear.rsa > etc/dropbear/dropbear.rsa.pub
+echo finish
+
 busybox ash
 
