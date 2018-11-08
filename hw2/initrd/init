@@ -1,11 +1,17 @@
 #!/bin/busybox ash
-busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin
+busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin dev/pts
 busybox /bin/busybox --install -s
-busybox mount -t devtmpfs devtmpfs /dev
-busybox mount -t sysfs sysfs /sys
-busybox mount -t proc procfs /proc
-busybox mount -t tmpfs tmpfs /tmp 
+mount -t devtmpfs devtmpfs /dev
+mount -t sysfs sysfs /sys
+mount -t proc procfs /proc
+mount -t tmpfs tmpfs /tmp 
+mount -o bind dev/pts dev/pts
 ./bin/sysinfo
-#make install bin/dropbearmulti
+
+mkdir -pv etc/dropbear
+echo create ssh key
+bin/dropbearmulti dropbearkey -t rsa -s 4096 -f etc/dropbear/dropbear.rsa > etc/dropbear/dropbear.rsa.pub
+echo finish
+
 busybox ash
 
