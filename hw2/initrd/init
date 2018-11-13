@@ -12,7 +12,7 @@ busybox mount -o bind dev/pts dev/pts
 
 #mkdir -pv etc/dropbear
 #echo create ssh key
-#bin/dropbearmulti dropbearkey -t rsa -s 4096 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
+bin/dropbearmulti dropbearkey -t rsa -s 4096 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
 #echo finish
 
 dropbearmulti dropbear

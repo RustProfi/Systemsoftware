@@ -50,11 +50,17 @@ cp ../../../../../../lib/x86_64-linux-gnu/libnss_files.so.2 lib
 #generate ssh key
 #später zu clean moven
 rm ../dropbearkey
+rm /etc/dropbear/authorized_keys
 mkdir etc/dropbear
-./bin/dropbearmulti dropbearkey -t rsa -s 4096 -f ../dropbearkey > etc/dropbear/dropbear_rsa_host_key
-
+./bin/dropbearmulti dropbearkey -t rsa -s 4096 -f ../dropbearkey
+./bin/dropbearmulti dropbearkey -y -f ../dropbearkey | grep "^ssh-rsa " >> authorized_keys
+mv authorized_keys etc/dropbear
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
+#eval "$(ssh-agent -s)"
+ssh-add ../dropbearkey
+expect "#"
+send "\n"
 }
 
 clean()
