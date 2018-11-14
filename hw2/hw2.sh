@@ -47,20 +47,8 @@ cp ../../../../../../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 lib
 cp ../../../../../../lib/x86_64-linux-gnu/libc.so.6 lib
 cp ../../../../../../lib/x86_64-linux-gnu/libnss_files.so.2 lib 
  
-#generate ssh key
-#später zu clean moven
-rm ../dropbearkey
-rm /etc/dropbear/authorized_keys
-mkdir etc/dropbear
-./bin/dropbearmulti dropbearkey -t rsa -s 4096 -f ../dropbearkey
-./bin/dropbearmulti dropbearkey -y -f ../dropbearkey | grep "^ssh-rsa " >> authorized_keys
-mv authorized_keys etc/dropbear
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
-#eval "$(ssh-agent -s)"
-ssh-add ../dropbearkey
-expect "#"
-send "\n"
 }
 
 clean()
@@ -75,7 +63,6 @@ rm  busybox-1.26.2.tar.bz2
 rm -r dropbear-2016.74
 rm dropbear-2016.74.tar.bz2
 rm -r initrd/etc/dropbear
-rm dropbearkey
 rm -r initrd/lib
 rm -r artifacts
 }
@@ -98,7 +85,7 @@ else
 				;;
 		"clean" )	clean
 				;;
-		"clean" )	clean
+		"ssh_cmd" )	ssh
 				;;
 		* )		usage
 				exit 1

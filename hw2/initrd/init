@@ -6,15 +6,15 @@ busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
 busybox mount -t tmpfs tmpfs /tmp 
 mkdir dev/pts
-busybox mount -o bind dev/pts dev/pts
+busybox mount -t devpts devpts dev/pts
 
 ./bin/sysinfo
-
-#mkdir -pv etc/dropbear
-#echo create ssh key
-bin/dropbearmulti dropbearkey -t rsa -s 4096 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
-#echo finish
-
-dropbearmulti dropbear
+export LD_LIBRARY_PATH=/lib
+mkdir -pv etc/dropbear
+echo create ssh key
+bin/dropbearmulti dropbearkey -t rsa -s 512 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
+echo finish
+ifconfig eth0 10.0.2.15
+dropbearmulti dropbear -B -p 22
 busybox ash
 
