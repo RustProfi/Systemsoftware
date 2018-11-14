@@ -1,5 +1,4 @@
 #!/bin/bash
-
 build-artifacts()
 {
 BASEDIR=$(dirname "$0")
@@ -75,14 +74,11 @@ qemu(){
 qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
 }
 
-ssh(){
+ssh_call(){
 if [ "$commands" == "" ]; then
-	echo "pass some commands"
+        echo "pass some commands"
 else
-	#echo "ssh -o StrictHostKeyChecking=no root@localhost -p 22222 \""${commands}"\""
-	#ssh -o StrictHostKeyChecking=no root localhost -p 22222 \""${commands}"\"
-	ssh -o StrictHostKeyChecking=no -l root localhost -p 22222 \""${commands}"\"
-	#ssh root@localhost -p 22222 \""${commands}"\" 
+      ssh -o StrictHostKeyChecking=no root@localhost -p 22222 "${commands}"
 fi
 }
 
@@ -95,9 +91,9 @@ else
 				;;
 		"clean" )	clean
 				;;
-		"ssh_cmd" )	
-commands="$2"
-ssh
+		"ssh_cmd" )
+				commands="$2"
+				ssh_call
 
 				;;
 		* )		usage
