@@ -12,7 +12,7 @@ busybox mount -t devpts devpts dev/pts
 export LD_LIBRARY_PATH=/lib
 mkdir -pv etc/dropbear
 echo create ssh key
-bin/dropbearmulti dropbearkey -t rsa -s 512 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
+bin/dropbearmulti dropbearkey -t rsa -s 1024 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
 echo finish
 ifconfig eth0 10.0.2.15
 dropbearmulti dropbear -B -p 22
