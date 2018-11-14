@@ -6,12 +6,12 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-#tar xf linux-4.11.tar.xz
-#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-#tar xvjf busybox-1.26.2.tar.bz2
-#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-#tar xvjf dropbear-2016.74.tar.bz2
+wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+tar xf linux-4.11.tar.xz
+wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+tar xvjf busybox-1.26.2.tar.bz2
+wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
 cp kernel/.config linux-4.11
@@ -22,16 +22,16 @@ mkdir artifacts
 
 #build
 cd linux-4.11
-#make -j5
+make -j5
 cp arch/x86_64/boot/bzImage ../artifacts
 cd ../busybox-1.26.2
-#make -j5
+make -j5
 cp busybox ../initrd/bin
 
 cd ../dropbear-2016.74
-#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx
-#sed -i 's/22/22222/g' options.h
-#make STATIC=1 MULTI=1
+./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx
+sed -i 's/22/22222/g' options.h
+make STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
 cp dropbearmulti ../artifacts
 
