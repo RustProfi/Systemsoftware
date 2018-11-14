@@ -62,7 +62,6 @@ rm  linux-4.11.tar.xz
 rm  busybox-1.26.2.tar.bz2
 rm -r dropbear-2016.74
 rm dropbear-2016.74.tar.bz2
-rm -r initrd/etc/dropbear
 rm -r initrd/lib
 rm -r artifacts
 }
@@ -76,6 +75,14 @@ qemu(){
 qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
 }
 
+ssh(){
+ssh -o StrictHostKeyChecking=no root@localhost -p 22222
+cd ..
+
+"$commands"
+echo test
+}
+
 if [ "$1" == "" ]; then
 	echo "Building all artifacts"
 	build-artifacts
@@ -85,7 +92,10 @@ else
 				;;
 		"clean" )	clean
 				;;
-		"ssh_cmd" )	ssh
+		"ssh_cmd" )	
+commands="$2"
+ssh
+
 				;;
 		* )		usage
 				exit 1
