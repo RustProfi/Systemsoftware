@@ -76,11 +76,14 @@ qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=
 }
 
 ssh(){
-ssh -o StrictHostKeyChecking=no root@localhost -p 22222
-cd ..
-
-"$commands"
-echo test
+if [ "$commands" == "" ]; then
+	echo "pass some commands"
+else
+	#echo "ssh -o StrictHostKeyChecking=no root@localhost -p 22222 \""${commands}"\""
+	#ssh -o StrictHostKeyChecking=no root localhost -p 22222 \""${commands}"\"
+	ssh -o StrictHostKeyChecking=no -l root localhost -p 22222 \""${commands}"\"
+	#ssh root@localhost -p 22222 \""${commands}"\" 
+fi
 }
 
 if [ "$1" == "" ]; then
