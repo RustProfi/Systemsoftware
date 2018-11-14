@@ -63,7 +63,9 @@ rm -r dropbear-2016.74
 rm dropbear-2016.74.tar.bz2
 rm -r initrd/lib
 rm -r artifacts
-rm -r initrd/bin
+rm initrd/bin/sysinfo
+rm initrd/bin/busybox
+rm initrd/bin/dropbearmulti
 rm sysinfo/sysinfo
 }
 
