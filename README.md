@@ -11,4 +11,3 @@ Then **create one branch per homework**.
 
 When one homework is done, **create a pull-request against the upstream 
 repository** of your work.
-
