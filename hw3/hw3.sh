@@ -42,11 +42,11 @@ cd ../initrd
 
 #copy shared libs
 mkdir lib
-libdir="$(gcc -print-file-name="ld-linux-x86-64.so.2")" 
+libdir="$(aarch64-linux-gnu-gcc -print-file-name="ld-linux-x86-64.so.2")" 
 cp "$libdir" lib
-libdir="$(gcc -print-file-name="libc.so.6")"
+libdir="$(aarch64-linux-gnu-gcc -print-file-name="libc.so.6")"
 cp "$libdir" lib
-libdir="$(gcc -print-file-name="libnss_files.so.2")"
+libdir="$(aarch64-linux-gnu-gcc -print-file-name="libnss_files.so.2")"
 cp "$libdir" lib 
 
 #create cpio
