@@ -1,4 +1,3 @@
-#!/usr/bin/env labshell
 #!/usr/bin/env bash
 #set -o xtrace
 
@@ -45,7 +44,7 @@ if [ "$HW" -eq 1 ]; then
   echo " verify qemu is running..."
   run pgrep qemu-system-x86
   run pkill qemu-system-x86
-  
+
   run "${HW_SCRIPT}" qemu_busybox 0</dev/null &
   sleep 30
   echo " verify qemu is running..."
