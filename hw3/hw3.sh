@@ -42,10 +42,13 @@ cd ../initrd
 
 #copy shared libs
 mkdir lib
-cp ../../../../../../lib/x86_64-linux-gnu/ld-linux-x86-64.so.2 lib
-cp ../../../../../../lib/x86_64-linux-gnu/libc.so.6 lib
-cp ../../../../../../lib/x86_64-linux-gnu/libnss_files.so.2 lib 
- 
+libdir="$(gcc -print-file-name="ld-linux-x86-64.so.2")" 
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libc.so.6")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libnss_files.so.2")"
+cp "$libdir" lib 
+
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
 }
