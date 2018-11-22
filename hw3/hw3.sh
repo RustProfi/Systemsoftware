@@ -1,4 +1,4 @@
-#!/bin/bash
+cd h	#!/bin/bash
 build-artifacts()
 {
 BASEDIR=$(dirname "$0")
@@ -21,10 +21,12 @@ mkdir artifacts
 
 #build
 cd linux-4.11
+make clean
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
+make clean
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp busybox ../initrd/bin
 cp busybox ../artifacts
