@@ -22,15 +22,17 @@ mkdir artifacts
 #build
 cd linux-4.11
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-cp arch/x86_64/boot/bzImage ../artifacts
+cp arch/arm64/boot/Image ../artifacts
+
 cd ../busybox-1.26.2
-#make -j5
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp busybox ../initrd/bin
 
 cd ../dropbear-2016.74
-./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --host=aarch64-linux-gnu
+make clean
+./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --disable-zlib --enable-openpty --host=aarch64-unknown-linux-gnu CC=aarch64-linux-gnu-gcc
 sed -i 's/22/22222/g' options.h
-make STATIC=1 MULTI=1
+make PROGRAMS="dropbear scp dropbearkey dbclient" STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
 cp dropbearmulti ../artifacts
 
@@ -42,7 +44,7 @@ cd ../initrd
 
 #copy shared libs
 mkdir lib
-libdir="$(aarch64-linux-gnu-gcc -print-file-name="ld-linux-x86-64.so.2")" 
+libdir="$(aarch64-linux-gnu-gcc -print-file-name="ld-linux-aarch64.so.1")" 
 cp "$libdir" lib
 libdir="$(aarch64-linux-gnu-gcc -print-file-name="libc.so.6")"
 cp "$libdir" lib
@@ -78,7 +80,7 @@ usage()
 }
 
 qemu(){
-qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
+qemu-system-aarch64 -m 64 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
 }
 
 ssh_call(){
