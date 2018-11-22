@@ -22,11 +22,12 @@ mkdir artifacts
 #build
 cd linux-4.11
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-cp arch/arm64/boot/Image ../artifacts
+cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
 ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp busybox ../initrd/bin
+cp busybox ../artifacts
 
 cd ../dropbear-2016.74
 make clean
@@ -39,6 +40,7 @@ cp dropbearmulti ../artifacts
 cd ../sysinfo
 make
 cp sysinfo ../initrd/bin
+cp sysinfo ../artifacts
 
 cd ../initrd
 
@@ -80,7 +82,7 @@ usage()
 }
 
 qemu(){
-qemu-system-aarch64 -m 64 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
+qemu-system-aarch64 -m 64 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image.gz -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
 }
 
 ssh_call(){
