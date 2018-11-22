@@ -28,7 +28,7 @@ cd ../busybox-1.26.2
 cp busybox ../initrd/bin
 
 cd ../dropbear-2016.74
-./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx
+./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --host=aarch64-linux-gnu
 sed -i 's/22/22222/g' options.h
 make STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
