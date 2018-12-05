@@ -1,4 +1,4 @@
-#!/bin/bash
+##!/bin/bash
 build-artifacts()
 {
 BASEDIR=$(dirname "$0")
@@ -92,7 +92,6 @@ if [ "$1" == "" ]; then
         echo "pass some commands"
 else
       ssh -o StrictHostKeyChecking=no root@localhost -p 22222 "${1}"
-	echo "ssh -o StrictHostKeyChecking=no root@localhost -p 22222 "$1""
 fi
 }
 
@@ -105,8 +104,21 @@ make
 modules_copy(){
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
-ssh_call "mkdir be; ls"
-#ssh_call ""cat > /lib/modules/\$(uname -r)/" < modules/hello_kworld/hello_kworld.ko" 
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko 
+}
+
+modules_load(){
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_kworld.ko"
+
+}
+
+modules_test(){
+echo "Platzhalter"
+}
+
+modules_unload(){
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
+
 }
 
 if [ "$1" == "" ]; then
@@ -121,9 +133,13 @@ else
 		"ssh_cmd" )
 				ssh_call "$2"
 				;;
-		"modules_build" )	modules_build
+		"modules_build" | "mb" )	modules_build
 				;;
-		"modules_copy" )	modules_copy
+		"modules_copy" | "mc" )	modules_copy
+				;;
+		"modules_load" | "ml" )	modules_load
+				;;
+		"modules_unload" | "mu") modules_unload
 				;;
 		* )		usage
 				exit 1
