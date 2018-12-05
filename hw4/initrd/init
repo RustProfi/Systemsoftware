@@ -1,6 +1,10 @@
 #!/bin/busybox ash
-busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin
+busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin lib/modules
 busybox /bin/busybox --install -s
+cd lib
+cd modules
+mkdir $(uname -r)
+cd ../../
 busybox mount -t devtmpfs devtmpfs /dev
 busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
