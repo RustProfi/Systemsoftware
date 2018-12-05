@@ -5,16 +5,14 @@ obj-m := $(M).o
 else
 ARCH            ?= aarch64
 KERNEL_ARCH     ?= arm64
-CROSS_COMPILE   ?= ${ARCH}-unknown-linux-gnu-
+CROSS_COMPILE   ?= ${ARCH}-linux-gnu-
 CC              ?= ${CROSS_COMPILE}gcc
 PWD             ?= $(shell pwd)
-KDIR             ?= $(PWD)/../../linux-4.11/src
+KDIR             ?= $(PWD)/../../linux-4.11/
 
 default:
-	ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(CROSS_COMPILE) 
-	$(MAKE) -C $(KDIR) SUBDIRS=$(PWD) hello_kworld
+	ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
 endif
 
 clean:
-	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers 
-	*.order
+	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order
