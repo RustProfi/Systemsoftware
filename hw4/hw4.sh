@@ -99,17 +99,21 @@ modules_build(){
 BASEDIR=$(dirname "$0")
 cd $BASEDIR/modules/hello_kworld/
 make
+cd ../simple_chardev/
+make
 }
 
 modules_copy(){
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko 
+ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
+
 }
 
 modules_load(){
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_kworld.ko"
-
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/simple_chardev.ko"
 }
 
 modules_test(){
@@ -118,7 +122,7 @@ echo "Platzhalter"
 
 modules_unload(){
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
-
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/simple_chardev.ko"
 }
 
 if [ "$1" == "" ]; then
