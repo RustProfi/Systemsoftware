@@ -4,8 +4,6 @@
 #include <linux/fs.h> /*contains alloc_chrdev_region*/
 #include <linux/device.h> /*device create etc*/ 
 
-MODULE_LICENSE("GPL");
-
 static struct file_operations fops;
 static dev_t template_dev_number;
 static struct cdev * driver_object;
@@ -57,7 +55,7 @@ static void __exit ModExit(void)
 module_init(ModInit);
 module_exit(ModExit);
 
-MODULE_LICENSE("GPL")
+MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Marno Janetzky, Gabriel Cmiel");
 MODULE_DESCRIPTION("Simple Chardev");
 MODULE_SUPPORTED_DEVICE("simple_chardev");
