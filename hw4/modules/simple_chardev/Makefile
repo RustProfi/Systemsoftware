@@ -18,4 +18,4 @@ test:
 	$(CROSS_COMPILE)gcc -static -x c simple_chardev.c.test -o simple_chardev.ko.test
 
 clean:
-	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order
+	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order *.ko.test

@@ -101,14 +101,17 @@ cd $BASEDIR/modules/hello_kworld/
 make
 cd ../simple_chardev/
 make
+make test
+chmod u+x simple_chardev.ko.test
+cp simple_chardev.ko.test ../../artifacts/
 }
 
 modules_copy(){
 BASEDIR=$(dirname "$0")
 cd $BASEDIR
-ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko 
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.test" < modules/simple_chardev/simple_chardev.test
+ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko.test" < modules/simple_chardev/simple_chardev.ko.test
 }
 
 modules_load(){
