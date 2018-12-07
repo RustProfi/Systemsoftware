@@ -1,10 +1,11 @@
 #include<stdlib.h>
 #include <sys/stat.h>
 #include <assert.h>
+#include <stdio.h>
 
 int main() {
            struct stat sb;
-	char* path = "/dev/SimpleChardev";
+	char* path = "/dev/simple_chardev";
 
            if (stat(path, &sb) == -1) {
                perror("stat");
