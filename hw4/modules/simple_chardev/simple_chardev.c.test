@@ -4,29 +4,16 @@
 #include <stdio.h>
 
 int main() {
-           struct stat sb;
+	struct stat sb;
 	char* path = "/dev/simple_chardev";
+	
+	//try to get infos of the path
+        int result = stat(path, &sb);
 
-           if (stat(path, &sb) == -1) {
-               perror("stat");
-               exit(EXIT_FAILURE);
-           }    
-
-printf("ID of containing device:  [%lx,%lx]\n",
-                (long) major(sb.st_dev), (long) minor(sb.st_dev));
-
-           printf("File type:                ");
-
-           switch (sb.st_mode & S_IFMT) {
-           case S_IFBLK:  printf("block device\n");            break;
-           case S_IFCHR:  printf("character device\n");        break;
-           case S_IFDIR:  printf("directory\n");               break;
-           case S_IFIFO:  printf("FIFO/pipe\n");               break;
-           case S_IFLNK:  printf("symlink\n");                 break;
-           case S_IFREG:  printf("regular file\n");            break;
-           case S_IFSOCK: printf("socket\n");                  break;
-           default:       printf("unknown?\n");                break;
-           }	   
-
+	//checks if path exists
+	assert(result >= 0);
+	//checks if it's a character device via macro
+	assert(S_ISCHR(sb.st_mode));
 	return 0;
+
 }

@@ -98,11 +98,12 @@ fi
 modules_build(){
 BASEDIR=$(dirname "$0")
 cd $BASEDIR/modules/hello_kworld/
+make clean
 make
 cd ../simple_chardev/
+make clean
 make
 make test
-chmod u+x simple_chardev.ko.test
 cp simple_chardev.ko.test ../../artifacts/
 }
 
@@ -120,12 +121,20 @@ ssh_call "busybox insmod /lib/modules/\$(uname -r)/simple_chardev.ko"
 }
 
 modules_test(){
-echo "Platzhalter"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
 }
 
 modules_unload(){
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/simple_chardev.ko"
+}
+
+modules() {
+modules_build
+modules_copy
+modules_load
+modules_test
+modules_unload
 }
 
 if [ "$1" == "" ]; then
@@ -147,6 +156,10 @@ else
 		"modules_load" | "ml" )	modules_load
 				;;
 		"modules_unload" | "mu") modules_unload
+				;;
+		"modules_test" | "mt") modules_test
+				;;
+		"modules" | "m") modules
 				;;
 		* )		usage
 				exit 1
