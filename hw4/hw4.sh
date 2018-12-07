@@ -26,8 +26,8 @@ cd linux-4.11
 cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
-#make clean
-#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+make clean
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp busybox ../initrd/bin
 cp busybox ../artifacts
 
@@ -108,7 +108,7 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko 
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
-
+ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.test" < modules/simple_chardev/simple_chardev.test
 }
 
 modules_load(){
