@@ -5,12 +5,20 @@
 #include <linux/device.h> /*device create etc*/ 
 #include <asm/errno.h>
 
-static struct file_operations fops;
 static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
-static int write_count=0;
 int i;
+static atomic_t write_count = ATOMIC_INIT(0);
+
+static int driver_open(struct inode *, struct file *);
+static int driver_close(struct inode *, struct file *); 
+
+static struct file_operations fops = {
+.open = driver_open,
+.release = driver_close,
+};
+
 
 static int __init ModInit(void)
 {
@@ -58,17 +66,17 @@ static void __exit ModExit(void)
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz){
 	if(instanz->f_flags&O_RDWR || instanz->f_flags&O_WRONLY) {
-		if(write_count > 0) {
+		if(atomic_read(&write_count) >= MINOR(geraetedatei->i_rdev)) {
 			return -EBUSY;
 		}
-		write_count++;
+		atomic_inc(&write_count);
 	}
 	return 0;
 }
 
 static int driver_close(struct inode *geraetedatei, struct file *instanz) {
 	if(instanz->f_flags&O_RDWR || instanz->f_flags&O_WRONLY) {
-		write_count--;
+		atomic_dec(&write_count);
 	}
 	return 0;
 }
