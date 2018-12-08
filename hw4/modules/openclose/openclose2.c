@@ -5,7 +5,16 @@
 #include <linux/device.h> /*device create etc*/ 
 #include <linux/slab.h> //kmalloc, kfree
 
-static struct file_operations fops;
+
+static int driver_open(struct inode *, struct file *);
+static int driver_close(struct inode *, struct file *);
+
+static struct file_operations fops = 
+{
+    .open = driver_open,
+    .release = driver_close,
+};
+
 static dev_t template_dev_number;
 //dev_t deviceNumbers[257];
 dev_t *deviceNumbers;
@@ -13,6 +22,7 @@ static struct cdev * driver_object;
 struct class *template_class;
 int major, i;
 dev_t devNr;
+static atomic_t acounter = ATOMIC_INIT(0);
 
 //returned die device number. N ist gleich der Minor Nr
 dev_t createDevice(int majorNr, int N) {
@@ -77,6 +87,24 @@ static void __exit ModExit(void)
     return;
     
 }
+
+static int driver_open(struct inode *geraet, struct file *instanz) {
+    if(instanz->f_flags&O_RDWR || instanz->f_flags&O_WRONLY) {
+        if (atomic_read(&acounter) >= MINOR(geraet->i_rdev)) {
+            return -EBUSY;
+        }
+        atomic_inc(&acounter);
+    }
+    return 0;
+}
+
+static int driver_close(struct inode *geraet, struct file *instanz) {
+    if(instanz->f_flags&O_RDWR || instanz->f_flags&O_WRONLY) {
+        atomic_dec(&acounter);
+    }
+    return 0;
+}
+
 
 module_init(ModInit);
 module_exit(ModExit);
