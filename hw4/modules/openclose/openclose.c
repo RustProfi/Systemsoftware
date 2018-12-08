@@ -54,7 +54,7 @@ static void __exit ModExit(void)
 {
     printk(KERN_ALERT "char dev kill\n");
     for(i = 0; i < 257; i++){
-        device_destroy(template_class,MKDEV(template_dev_number,template_dev_number + i));
+        device_destroy(template_class,MKDEV(template_dev_number, i));
     }
     class_destroy(template_class);
     /*Abmelden des Treibers*/
