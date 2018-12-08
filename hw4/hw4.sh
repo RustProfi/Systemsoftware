@@ -105,6 +105,11 @@ make clean
 make
 make test
 cp simple_chardev.ko.test ../../artifacts/
+cd ../openclose/
+make clean
+make
+make test
+cp openclose.ko.test ../../artifacts/
 }
 
 modules_copy(){
@@ -113,20 +118,26 @@ cd $BASEDIR
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko.test" < modules/simple_chardev/simple_chardev.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko" < modules/openclose/openclose.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko.test" < modules/openclose/openclose.ko.test
+
 }
 
 modules_load(){
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_kworld.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/simple_chardev.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/openclose.ko"
 }
 
 modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
+ssh_call "busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
 }
 
 modules_unload(){
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/simple_chardev.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/openclose.ko"
 }
 
 modules() {
