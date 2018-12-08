@@ -110,11 +110,13 @@ make clean
 make
 make test
 cp openclose.ko.test ../../artifacts/
+
+cd ../../
 }
 
 modules_copy(){
-BASEDIR=$(dirname "$0")
-cd $BASEDIR
+#BASEDIR=$(dirname "$0")
+#cd $BASEDIR
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko.test" < modules/simple_chardev/simple_chardev.ko.test
