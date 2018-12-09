@@ -1,21 +1,64 @@
-#include<stdlib.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
 
+struct stat sb;
+int i,result, limit,fd, count;
+char path[15] = "/dev/openclose";
+char num[4];
+
+static int seq_open();
 
 int main() {
-	int fd, i;
+	for(i = 0;i < 257 ;i++){
+		itoa(i,num,10);
+		strcat(path,num);
+        	result = stat(path, &sb);
 
-	for(i = 0; i < 5; i++) {
-		fd = open("/dev/openclose4", O_RDWR);
+		assert(result >= 0);
+		assert(S_ISCHR(sb.st_mode));
+		limit = --i;
+		//Open each device minor times
+		assert(i == seq_open(i,&path));
+		//Open each device minor times +1
+		// i should be equal to the return value
+		// because the next open fails and doesnt
+		// have an impact on return value
+		assert(i == seq_open(++i,&path));
+	
+	}
+	return 0;
+}
+//fnkt opens each device minor times
+// returns count of succesfull opens
+// return value should be equal to minor number
+static int seq_open(int opens, char* path){
+	count = 0;
+	for(i = 0;i < opens; i++){
+		fd = open(path,O_RDWR);
 		if(fd < 0) {
-			perror("sahne");
 			continue;
 		}
-		printf("Beste leben %d\n", i);
+		count++;
+		
 	}
+	return count;
+}
 
-	
+static int suc_close(int opens, char* path){
+	count = 0;
+	for(i= 0;i < opens;i++) {
+		fd = open(path,O_RDWR);
+		if(fd < 0) {
+			close(fd);
+			open(path,O_RDWR);
+			continue;
+		}
+		count++;
+	}
+	return count;
 }
