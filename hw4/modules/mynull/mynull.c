@@ -4,20 +4,17 @@
 #include <linux/fs.h> /*contains alloc_chrdev_region*/
 #include <linux/device.h> /*device create etc*/ 
 #include <asm/uaccess.h>
+#define EOF (-1)
 
 static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
 int i;
-
-static int driver_open(struct inode *, struct file *);
-static int driver_close(struct inode *, struct file *); 
+ 
 static ssize_t driver_read(struct file *, char *, size_t, loff_t *) ;
 static ssize_t driver_write(struct file *, const char *, size_t, loff_t *);
 
 static struct file_operations fops = {
-    .open = driver_open,
-    .release = driver_close,
     .read = driver_read,
     .write = driver_write,
 };
@@ -68,25 +65,13 @@ static void __exit ModExit(void)
     return;
 }
 
-static int driver_open(struct inode *geraetedatei, struct file *instanz){
-    return 0;
-}
-
-static int driver_close(struct inode *geraetedatei, struct file *instanz) {
-    return 0;
-}
-
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
     //Nichts wurde gelesen, also EOF
-    return 0;
+    return EOF;
 }
 
 static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t count, loff_t *offs) {
-    int to_copy, not_copied;
-    char buf[count];
-    to_copy = min(count, sizeof(buf));
-    not_copied = copy_from_user(buf, userbuf, to_copy);
-    return to_copy-not_copied;
+    return count;
 }
 
 
