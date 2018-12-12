@@ -34,10 +34,13 @@ static int __init ModInit(void)
         goto free_cdev;
     /*Eintrag im Sysfs, damit Udev den Geräteeintrag erzeugt */
     template_class = class_create(driver_object->owner,"openclose");
+    if(template_class == NULL){
+        goto free_cdev;
+    }
     for(i = 0;i < 257;i++){
-        if(device_create(template_class, NULL, MKDEV(template_dev_number,template_dev_number + i), NULL, "openclose%d", i) == NULL){
+        if(device_create(template_class, NULL, MKDEV(MAJOR(template_dev_number),MINOR(template_dev_number) + i), NULL, "openclose%d", i) == NULL){
             class_destroy(template_class);
-            unregister_chrdev_region(template_dev_number,257);
+            goto free_device_number;
         }
     }
     return 0;
@@ -54,7 +57,7 @@ static void __exit ModExit(void)
 {
     printk(KERN_ALERT "char dev kill\n");
     for(i = 0; i < 257; i++){
-        device_destroy(template_class,MKDEV(template_dev_number, i));
+        device_destroy(template_class,MKDEV(MAJOR(template_dev_number),MINOR(template_dev_number)+ i));
     }
     class_destroy(template_class);
     /*Abmelden des Treibers*/
