@@ -1,0 +1,25 @@
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    ssize_t rd, wr;
+    char buf[4];
+    char *test = "Teststring";
+
+    fd = open("/dev/mynull", O_RDWR);
+    
+    rd = read(fd, buf, 4);
+    printf("Message: %s\n", buf);
+    //assert(strcmp(buf, "") == 0);
+    //assert(strcmp(buf, "Hello, from grp5") == 0);  
+    wr = write(fd, test, 10);
+    assert(wr == 10);
+    printf("Bytes write: %d\n", wr);
+    return 0;
+}

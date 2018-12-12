@@ -20,13 +20,13 @@ static dev_t template_dev_number;
 dev_t *deviceNumbers;
 static struct cdev * driver_object;
 struct class *template_class;
-int major, i;
+int i;
 dev_t devNr;
 static atomic_t acounter = ATOMIC_INIT(0);
 
 //returned die device number. N ist gleich der Minor Nr
-dev_t createDevice(int majorNr, int N) {
-    devNr = MKDEV(majorNr, N);
+dev_t createDevice(int majorNr, int minor, int N) {
+    devNr = MKDEV(majorNr,minor+ N);
     
     device_create(template_class, NULL, devNr, NULL, "openclose%d",  N);
     return devNr;
@@ -55,7 +55,7 @@ static int __init ModInit(void)
     deviceNumbers = (dev_t *) kmalloc(257*sizeof(dev_t), GFP_KERNEL);
     
     for( i = 0; i < 257; i++) {
-        deviceNumbers[i] = createDevice(MAJOR(template_dev_number), i);
+        deviceNumbers[i] = createDevice(MAJOR(template_dev_number), MINOR(template_dev_number), i);
     }
     
     return 0;

@@ -110,6 +110,16 @@ make clean
 make
 make test
 cp openclose.ko.test ../../artifacts/
+cd ../hello
+make clean
+make
+make test
+cp hello.ko.test ../../artifacts/
+cd ../mynull
+make clean
+make
+make test
+cp mynull.ko.test ../../artifacts/
 
 cd ../../
 }
@@ -122,6 +132,10 @@ ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_ch
 ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko.test" < modules/simple_chardev/simple_chardev.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko" < modules/openclose/openclose.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko.test" < modules/openclose/openclose.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/hello.ko" < modules/hello/hello.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/hello.ko.test" < modules/hello/hello.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko" < modules/mynull/mynull.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko.test" < modules/mynull/mynull.ko.test
 
 }
 
@@ -129,17 +143,23 @@ modules_load(){
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_kworld.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/simple_chardev.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/openclose.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mynull.ko"
 }
 
 modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello.ko.test; ./hello.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mynull.ko.test; ./mynull.ko.test"
 }
 
 modules_unload(){
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/simple_chardev.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/openclose.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mynull.ko"
 }
 
 modules() {
@@ -147,7 +167,7 @@ modules_build
 modules_copy
 modules_load
 modules_test
-modules_unload
+#modules_unload
 }
 
 if [ "$1" == "" ]; then
