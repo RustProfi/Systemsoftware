@@ -1,0 +1,21 @@
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    ssize_t rd, wr;
+    char buf[10];
+
+    fd = open("/dev/myzero", O_RDWR);
+    
+    rd = read(fd, buf, 10);
+    //printf("Messagee: %s\n", buf);
+    printf("Read: %d", rd);   
+    
+    return 0;
+}
