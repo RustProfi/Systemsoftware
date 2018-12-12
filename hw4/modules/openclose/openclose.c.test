@@ -21,13 +21,9 @@ int main() {
 		result = stat(path, &sb);
 		assert(result >= 0);
 		assert(S_ISCHR(sb.st_mode));
-		//Open each device minor times
+		//Open each device minor times + 1 
 		assert(i == seq_open(i,path));
-		//Open each device minor times +1
-		// i should be equal to the return value
-		// because the next open fails and doesnt
-		// have an impact on return value
-		assert(i == seq_open(i + 1 ,path));
+		open_after_close(i,path);
 		strcpy(path,"/dev/openclose");	
 	}
 	return 0;
@@ -36,37 +32,37 @@ int main() {
 // returns count of succesfull opens
 // return value should be equal to minor number
 static int seq_open(int opens, char* path){
-	int i, n, count, length;
+	int i, count;
 	count = 0;
-	for(i = 0;i < opens; i++){
+	for(i = 0;i < opens +1 ; i++){
 		fd = open(path,O_RDWR);
-		fd_array[i] = fd;
 		if(fd == -1) {
 			continue;
 		}
 		count++;
 	}
-	if(fd_array[opens] != -1){
-		close(fd_array[opens]);
+	return count;
+}
+
+static void open_after_close(int opens, char* path){
+	int i, n;
+	int fd_array[256];
+	for(i = 0;i < opens; i++){
 		fd = open(path,O_RDWR);
-		if(fd == -1){
-			perror("unsucessful");
-		}
-		printf("%d open after close\n", opens);
-	} else {
-		close(fd_array[opens - 1]);
-		fd = open(path,O_RDWR);
-		if(fd == -1){
-			perror("failed");
-		}
-		printf("%d open after close2\n", opens);
+		fd_array[i] = fd;
 	}
+	close(fd_array[opens])
+	fd = open(path,O_RDWR);
+	if(fd == -1){
+		perror("open after close failed");
+	}
+	printf("open after close succesful\n");
 	for(n=0;n < opens+1; n++){
 		close(fd_array[n]);
 	}
-	return count;
 }
 
 
 
-int fd_array[256];
+
+
