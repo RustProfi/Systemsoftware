@@ -67,16 +67,13 @@ static void __exit ModExit(void)
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
 	int not_copied, to_copy;
-	unsigned int rnd;
 	char *buf;
-	get_random_bytes(&rnd, sizeof(rnd));
-	rnd %= 50000;
-	buf = (char *) vmalloc(rnd * sizeof(char));
+	buf = (char *) vmalloc(count * sizeof(char));
 	if(buf == NULL){
 		printk(KERN_ALERT "Alloc Failed");
 	}
-	memset(buf,'\0', rnd);
-	to_copy = rnd;
+	memset(buf,'\0', count);
+	to_copy = count;
 	to_copy = min(to_copy,(int) count);
 	not_copied = copy_to_user(user, buf, to_copy);
 	vfree(buf);
