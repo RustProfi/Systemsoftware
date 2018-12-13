@@ -5,21 +5,27 @@
 #include <string.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <errno.h>
 
 int main() {
-    int fd;
-    ssize_t rd, wr;
-    char buf[4];
-    char *test = "Teststring";
+	int fd;
+	ssize_t rd, wr;
+	char buf[4];
+	char *test = "Teststring";
 
-    fd = open("/dev/mynull", O_RDWR);
-    
-    rd = read(fd, buf, 4);
-    printf("Message: %s\n", buf);
-    //assert(strcmp(buf, "") == 0);
-    //assert(strcmp(buf, "Hello, from grp5") == 0);  
-    wr = write(fd, test, 10);
-    assert(wr == 10);
-    printf("Bytes write: %d\n", wr);
-    return 0;
+	fd = open("/dev/mynull", O_RDWR);
+	if(fd < 0){
+		perror("open: ");
+		return 1;
+	}
+	rd = read(fd, buf, 4);
+	// returns -1
+	assert(rd < 0);  
+	wr = write(fd, test, 10);
+	if(wr < 0){
+		perror("write: ");
+		return 1;
+	}
+	assert(wr == 10);
+	return 0;
 }
