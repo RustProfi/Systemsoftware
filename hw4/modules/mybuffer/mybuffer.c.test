@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <assert.h>
@@ -9,26 +10,33 @@
 #include <pthread.h>
 
 int fd, done, rd, wr;
-char buf[100];
+char buf[100], racebuf1[32], racebuf2[32], racebuf3[32];
+
 char *teststr = "FilltheBufferFilltheBufferFilltheBuffer";
 char *bytestr = "ThisIsA32ByteString:DDDDDDDDDDDD";
+char *race1 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+char *race2 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+char *race3 = "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC";
 
-pthread_cond_t c = PTHREAD_COND_INITIALIZER;
+
+pthread_cond_t e, f = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
 
 void *myread(void *);
 void *mywrite(void *);
 void *mywrite2(void *);
+void *racecar1(void *);
+void *racecar2(void *);
+void *racecar3(void *);
 
 int main() {
-    
-    pthread_t t1,t2, t3;
+    int retval;
+    pthread_t t1, t2, t3;
     done = 0;
     fd = open("/dev/mybuffer", O_RDWR);
     printf("Open: %d\n", fd);
 
     if(fd <0) {
-        perror("open: ");
         return 1;
     }
     
@@ -37,42 +45,113 @@ int main() {
     pthread_create(&t2, NULL, mywrite, &fd);
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
-
-    mb();
+    
+    //read full buffer write to full buffer
     pthread_create(&t1, NULL, myread, &fd);
     pthread_create(&t2, NULL, mywrite2, &fd);
-    pthread_create(&t3, NULL, myread, &fd);    
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
-    pthread_join(t3, NULL);
+
+
+    //Loop until race occurs
+    pthread_create(&t1, NULL, racecar1, &fd);
+    pthread_create(&t2, NULL, racecar2, &fd);
+    pthread_create(&t3, NULL, racecar3, &fd);
+
+    while(1) {
+	printf("oft\n");
+	retval = pthread_tryjoin_np(t1, NULL);
+	if(retval >= 0)
+		break;
+	
+	retval = pthread_tryjoin_np(t2, NULL);
+        if(retval >= 0)
+                break;
+
+	retval = pthread_tryjoin_np(t3, NULL);
+        if(retval >= 0)
+                break;
+    }
+
+    printf("AMK\n");
+
+//    sleep(10);
+  //  pthread_kill(t1,9);
+   // pthread_kill(t2,9);
+    //pthread_kill(t3,9);
+
+
 
     return 0;
 }
 
 void *myread(void *fd) {
     pthread_mutex_lock(&m);
-    done = 1;
-    pthread_cond_signal(&c);
+    while(done == 0)
+	pthread_cond_wait(&f, &m);
+    done--;
+    pthread_cond_signal(&e);
     pthread_mutex_unlock(&m);
 
     rd = read(*(int *)fd, buf, 100);
-    printf("Read %d bytes\n", rd);
-    printf("Ausgabe: %s\n", buf);
 }
 
 void *mywrite(void *fd) {
-    while(done == 0)
-	pthread_cond_wait(&c, &m);
+    
+    pthread_mutex_lock(&m);
+    while(done == 1)
+	pthread_cond_wait(&e, &m);
+    done++;
+    pthread_cond_signal(&f);
+    pthread_mutex_unlock(&m);
 
     wr = write(*(int *)fd, teststr, 50);
-    printf("wrote %d bytes\n", wr);
 }
 
 void *mywrite2(void *fd) {
-    while(done == 0)
-        pthread_cond_wait(&c, &m);
-
+    pthread_mutex_lock(&m);
+    while(done == 1)
+        pthread_cond_wait(&e, &m);
+    done++;
+    pthread_cond_signal(&f);
+    pthread_mutex_unlock(&m);
+    
     wr = write(*(int *)fd, bytestr, 50);
-    printf("wrote %d bytes\n", wr);
+}
+
+void *racecar1(void *fd) {
+
+    while(1) {
+    	wr = write(*(int *)fd, race1, 32);
+    	rd = read(*(int *)fd, racebuf1, 32);
+        if(strncmp(racebuf1, race1, 32) != 0)
+		break;
+    }
+    printf("Ich bin raus: AMK: %s\n", racebuf1);
+}
+
+void *racecar2(void *fd) {
+	
+    while(1) {
+        wr = write(*(int *)fd, race2, 32);
+
+        rd = read(*(int *)fd, racebuf2, 32);
+	if(strncmp(racebuf2, race2, 32) != 0)
+                break;
+    }
+    printf("Ich bin raus: BMK: %s\n", racebuf2);
+}
+
+void *racecar3(void *fd) {
+
+    while(1) {
+        wr = write(*(int *)fd, race3, 32);
+
+        rd = read(*(int *)fd, racebuf3, 32);
+        if(strncmp(racebuf3, race3,32) != 0)
+                break;
+
+    }
+    printf("Ich bin raus: CMK: %s\n", racebuf3);
 }
 

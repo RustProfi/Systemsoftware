@@ -163,7 +163,7 @@ ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer.ko"
 
 modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
+#ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello.ko.test; ./hello.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mynull.ko.test; ./mynull.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myzero.ko.test; ./myzero.ko.test"

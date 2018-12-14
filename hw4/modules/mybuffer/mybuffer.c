@@ -78,13 +78,9 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
         
     int not_copied, to_copy;
     
-    //wenn mehrere threads laufen braucht man hier while
-    if(!daten_da)
-        wait_event_interruptible(wqueue, daten_da);
+    wait_event_interruptible(wqueue, daten_da);
     
-    to_copy = BUFSIZE;//strlen(buffer)+1;
-    printk(KERN_ALERT "%d\n",to_copy);
-    to_copy = min(to_copy,(int) count);
+    to_copy = min(BUFSIZE, count);
     not_copied = copy_to_user(user, buffer, to_copy);
     return to_copy - not_copied;
 }
@@ -103,7 +99,6 @@ static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t co
         daten_da = 1;
         wake_up_interruptible(&wqueue);
     }
-        
     return to_copy-not_copied;
 }
 
