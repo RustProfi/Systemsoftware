@@ -47,7 +47,7 @@ static int __init ModInit(void)
     }
     
     init_waitqueue_head(&wqueue);
-    
+    buffer = (char *) kmalloc(64*sizeof(char), GFP_KERNEL);    
     return 0;
     
     free_cdev:
@@ -69,6 +69,7 @@ static void __exit ModExit(void)
     kobject_put(&driver_object->kobj);
     unregister_chrdev_region(template_dev_number, 1);
     kfree(buffer);
+    daten_da = 0;
     return;
 }
 
@@ -92,17 +93,8 @@ static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t co
    if(count == 0)
        return 0;
    
-    //Buffer reallokieren, wenn er größer werden muss
-    if (sizeof(buffer) /sizeof(char) < count) 
-       buffer = (char *) krealloc(buffer, count, GFP_KERNEL);
-
-    to_copy = min( count, sizeof(buffer));
+    to_copy = min( count, 64*sizeof(char));
    
-    //Buffer clearen, wenn der nächste String kleiner ist als der vorherige
-    if(sizeof(buffer)/sizeof(char) < to_copy) {
-        daten_da = 0;
-        memset(buffer, '\0', sizeof(buffer) / sizeof(char));
-    }
     not_copied = copy_from_user(buffer, userbuf, to_copy);
     
     if(to_copy-not_copied > 0) {
