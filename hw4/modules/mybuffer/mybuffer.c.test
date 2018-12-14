@@ -6,31 +6,73 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <errno.h>
+#include <pthread.h>
+
+int fd, done, rd, wr;
+char buf[100];
+char *teststr = "FilltheBufferFilltheBufferFilltheBuffer";
+char *bytestr = "ThisIsA32ByteString:DDDDDDDDDDDD";
+
+pthread_cond_t c = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
+
+void *myread(void *);
+void *mywrite(void *);
+void *mywrite2(void *);
 
 int main() {
-    int fd;
-    ssize_t rd, wr;
-    char buf[10];
-    char* abc = "Teststring";
-
+    
+    pthread_t t1,t2, t3;
+    done = 0;
     fd = open("/dev/mybuffer", O_RDWR);
     printf("Open: %d\n", fd);
- 
-    if(fd <0)
-        perror("open: ");
-	return 1;
-    
-    wr = write(fd, abc, 10);
-    printf("Wrote: %d", wr);
-    
-    if(wr < 0) {
-	perror("write: ");
-	return 1;
-	}
 
-    rd = read(fd, buf, 10);
-    //printf("Messagee: %s\n", buf);
-    printf("Read: %d", rd);
+    if(fd <0) {
+        perror("open: ");
+        return 1;
+    }
     
+    //First read then write
+    pthread_create(&t1, NULL, myread, &fd);
+    pthread_create(&t2, NULL, mywrite, &fd);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+
+    mb();
+    pthread_create(&t1, NULL, myread, &fd);
+    pthread_create(&t2, NULL, mywrite2, &fd);
+    pthread_create(&t3, NULL, myread, &fd);    
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
+    pthread_join(t3, NULL);
+
     return 0;
 }
+
+void *myread(void *fd) {
+    pthread_mutex_lock(&m);
+    done = 1;
+    pthread_cond_signal(&c);
+    pthread_mutex_unlock(&m);
+
+    rd = read(*(int *)fd, buf, 100);
+    printf("Read %d bytes\n", rd);
+    printf("Ausgabe: %s\n", buf);
+}
+
+void *mywrite(void *fd) {
+    while(done == 0)
+	pthread_cond_wait(&c, &m);
+
+    wr = write(*(int *)fd, teststr, 50);
+    printf("wrote %d bytes\n", wr);
+}
+
+void *mywrite2(void *fd) {
+    while(done == 0)
+        pthread_cond_wait(&c, &m);
+
+    wr = write(*(int *)fd, bytestr, 50);
+    printf("wrote %d bytes\n", wr);
+}
+
