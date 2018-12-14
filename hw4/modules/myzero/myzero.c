@@ -4,16 +4,15 @@
 #include <linux/device.h> /*device create etc*/ 
 #include <asm/uaccess.h>
 #include <linux/random.h>
-#include <linux/slab.h> //kmalloc kfree
+#include <linux/vmalloc.h>
+//#include <linux/slab.h>
 
 static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
-int i;
 
 static ssize_t driver_write(struct file *, const char *, size_t, loff_t *);
 static ssize_t driver_read(struct file *, char *, size_t, loff_t *) ;
-int getrnd(void);
 
 static struct file_operations fops = {
     .read = driver_read,
@@ -66,24 +65,19 @@ static void __exit ModExit(void)
     return;
 }
 
-int getrnd() {
-    unsigned int i;
-    get_random_bytes(&i, sizeof(unsigned int));
-    return i < 0 ? (i *-1) % 50000 : i % 50000;
-}
-
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
-    int rnd, not_copied, to_copy;
-    char *buf;
-    rnd = getrnd();
-
-    buf = (char *) kzalloc(rnd*sizeof(char), GFP_KERNEL);
-
-    to_copy = strlen(buf);
-    to_copy = min(to_copy,(int) count);
-    not_copied = copy_to_user(user, buf, to_copy);
-    kfree(buf);
-    return to_copy - not_copied;
+	int not_copied, to_copy;
+	char *buf;
+	buf = (char *) vmalloc(count * sizeof(char));
+	if(buf == NULL){
+		printk(KERN_ALERT "Alloc Failed");
+	}
+	memset(buf,'\0', count);
+	to_copy = count;
+	to_copy = min(to_copy,(int) count);
+	not_copied = copy_to_user(user, buf, to_copy);
+	vfree(buf);
+	return to_copy - not_copied;
 
 }
 
