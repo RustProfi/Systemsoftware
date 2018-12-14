@@ -125,7 +125,11 @@ make clean
 make
 make test
 cp myzero.ko.test ../../artifacts
-
+cd ../mybuffer
+make clean
+make
+make test
+cp mybuffer.ko.test ../../artifacts
 cd ../../
 }
 
@@ -143,7 +147,8 @@ ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko" < modules/mynull/mynull.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko.test" < modules/mynull/mynull.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/myzero.ko" < modules/myzero/myzero.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/myzero.ko.test" < modules/myzero/myzero.ko.test
-
+ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer.ko" < modules/mybuffer/mybuffer.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer.ko.test" < modules/mybuffer/mybuffer.ko.test
 }
 
 modules_load(){
@@ -153,6 +158,7 @@ ssh_call "busybox insmod /lib/modules/\$(uname -r)/openclose.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mynull.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/myzero.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer.ko"
 }
 
 modules_test(){
@@ -161,6 +167,7 @@ ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; .
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello.ko.test; ./hello.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mynull.ko.test; ./mynull.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myzero.ko.test; ./myzero.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mybuffer.ko.test; ./mybuffer.ko.test"
 }
 
 modules_unload(){
@@ -170,7 +177,7 @@ ssh_call "busybox rmmod /lib/modules/\$(uname -r)/openclose.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mynull.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/myzero.ko"
-
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mybuffer.ko"
 }
 
 modules() {
