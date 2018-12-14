@@ -6,6 +6,7 @@
 #include <linux/wait.h>
 #include <linux/slab.h> //alloc
 #define EOF (-1)
+#define BUFSIZE 32 * sizeof(char)
 
 static dev_t template_dev_number;
 static struct cdev * driver_object;
@@ -47,7 +48,7 @@ static int __init ModInit(void)
     }
     
     init_waitqueue_head(&wqueue);
-    buffer = (char *) kmalloc(64*sizeof(char), GFP_KERNEL);    
+    buffer = (char *) kmalloc(BUFSIZE, GFP_KERNEL);
     return 0;
     
     free_cdev:
@@ -81,7 +82,8 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
     if(!daten_da)
         wait_event_interruptible(wqueue, daten_da);
     
-    to_copy = strlen(buffer)+1;
+    to_copy = BUFSIZE;//strlen(buffer)+1;
+    printk(KERN_ALERT "%d\n",to_copy);
     to_copy = min(to_copy,(int) count);
     not_copied = copy_to_user(user, buffer, to_copy);
     return to_copy - not_copied;
@@ -93,7 +95,7 @@ static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t co
    if(count == 0)
        return 0;
    
-    to_copy = min( count, 64*sizeof(char));
+    to_copy = min( count, BUFSIZE);
    
     not_copied = copy_from_user(buffer, userbuf, to_copy);
     
