@@ -21,6 +21,7 @@ pthread_cond_t e, f = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t m = PTHREAD_MUTEX_INITIALIZER;
 
 void *myread(void *);
+void *onlyread(void *);
 void *mywrite(void *);
 void *mywrite2(void *);
 void *racecar1(void *);
@@ -37,19 +38,27 @@ int main() {
     if(fd <0) {
         return 1;
     }
-    
+
+//1. möglichkeot  
+	pthread_create(&t1, NULL, onlyread, &fd);
+	sleep(1);
+	write(fd,teststr, 50);
+        pthread_join(t1, NULL);
+   	printf("AMK\n");
+  
+//2. möglichkeit
     //First read then write
-    pthread_create(&t1, NULL, myread, &fd);
+/*    pthread_create(&t1, NULL, myread, &fd);
     pthread_create(&t2, NULL, mywrite, &fd);
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
-    
+    printf("AMK");
     //read full buffer write to full buffer
     pthread_create(&t1, NULL, myread, &fd);
     pthread_create(&t2, NULL, mywrite2, &fd);
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
-
+*/
     //Loop until race occurs
     pthread_create(&t1, NULL, racecar1, &fd);
     pthread_create(&t2, NULL, racecar2, &fd);
@@ -60,37 +69,48 @@ int main() {
 }
 
 void *myread(void *fd) {
+    pthread_t tt1;
+   
     pthread_mutex_lock(&m);
-    while(done == 0)
+    while(done == 1)
 	pthread_cond_wait(&f, &m);
-    done--;
+    done++;
+    printf("Erst read\n");
+    //start blocking call read in new thread
+    pthread_create(&tt1, NULL, onlyread, fd);
+    //get sure it blocks
+    sleep(1);
     pthread_cond_signal(&e);
     pthread_mutex_unlock(&m);
+    
+    pthread_join(tt1, NULL);
+}
 
-    rd = read(*(int *)fd, buf, 100);
+void *onlyread(void *fd) {
+    printf("ich warte lol\n");
+    read(*(int *)fd, buf, 100);
 }
 
 void *mywrite(void *fd) {
-    
     pthread_mutex_lock(&m);
-    while(done == 1)
+    while(done == 0)
 	pthread_cond_wait(&e, &m);
-    done++;
+    done--;
+    printf("dann write\n");
+    write(*(int *)fd, teststr, 50);
     pthread_cond_signal(&f);
     pthread_mutex_unlock(&m);
-
-    wr = write(*(int *)fd, teststr, 50);
 }
 
 void *mywrite2(void *fd) {
     pthread_mutex_lock(&m);
-    while(done == 1)
+    while(done == 0)
         pthread_cond_wait(&e, &m);
-    done++;
+    done--;
+    printf("dann auf vollen speicher schreiben\n");
+    write(*(int *)fd, bytestr, 50);
     pthread_cond_signal(&f);
-    pthread_mutex_unlock(&m);
-    
-    wr = write(*(int *)fd, bytestr, 50);
+    pthread_mutex_unlock(&m);    
 }
 
 void *racecar1(void *fd) {

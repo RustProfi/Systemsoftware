@@ -84,7 +84,7 @@ usage()
 }
 
 qemu(){
-qemu-system-aarch64 -m 64 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image.gz -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
+qemu-system-aarch64 -m 64 -smp 2 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image.gz -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
 }
 
 ssh_call(){
@@ -100,31 +100,31 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR/modules/hello_kworld/
 make clean
 make
-cd ../simple_chardev/
-make clean
-make
-make test
-cp simple_chardev.ko.test ../../artifacts/
-cd ../openclose/
-make clean
-make
-make test
-cp openclose.ko.test ../../artifacts/
-cd ../hello
-make clean
-make
-make test
-cp hello.ko.test ../../artifacts/
-cd ../mynull
-make clean
-make
-make test
-cp mynull.ko.test ../../artifacts/
-cd ../myzero
-make clean
-make
-make test
-cp myzero.ko.test ../../artifacts
+#cd ../simple_chardev/
+#make clean
+#make
+#make test
+#cp simple_chardev.ko.test ../../artifacts/
+#cd ../openclose/
+#make clean
+#make
+#make test
+#cp openclose.ko.test ../../artifacts/
+#cd ../hello
+#make clean
+#make
+#make test
+#cp hello.ko.test ../../artifacts/
+#cd ../mynull
+#make clean
+#make
+#make test
+#cp mynull.ko.test ../../artifacts/
+#cd ../myzero
+#make clean
+#make
+#make test
+#cp myzero.ko.test ../../artifacts
 cd ../mybuffer
 make clean
 make
@@ -185,7 +185,7 @@ modules_build
 modules_copy
 modules_load
 modules_test
-modules_unload
+#modules_unload
 }
 
 if [ "$1" == "" ]; then
