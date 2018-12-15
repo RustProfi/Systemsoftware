@@ -5,24 +5,24 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-#tar xf linux-4.11.tar.xz
-#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-#tar xvjf busybox-1.26.2.tar.bz2
-#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-#tar xvjf dropbear-2016.74.tar.bz2
+wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+tar xf linux-4.11.tar.xz
+wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+tar xvjf busybox-1.26.2.tar.bz2
+wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
-#cp kernel/.config linux-4.11
-#cp busybox/.config busybox-1.26.2
-#cp dropbear/options.h dropbear-2016.74
+cp kernel/.config linux-4.11
+cp busybox/.config busybox-1.26.2
+cp dropbear/options.h dropbear-2016.74
 
 mkdir artifacts
 
 #build
 cd linux-4.11
-#make clean
-#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+make clean
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
@@ -32,10 +32,10 @@ cp busybox ../initrd/bin
 cp busybox ../artifacts
 
 cd ../dropbear-2016.74
-#make clean
-#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --disable-zlib --enable-openpty --host=aarch64-unknown-linux-gnu CC=aarch64-linux-gnu-gcc
-#sed -i 's/22/22222/g' options.h
-#make PROGRAMS="dropbear scp dropbearkey dbclient" STATIC=1 MULTI=1
+make clean
+./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --disable-zlib --enable-openpty --host=aarch64-unknown-linux-gnu CC=aarch64-linux-gnu-gcc
+sed -i 's/22/22222/g' options.h
+make PROGRAMS="dropbear scp dropbearkey dbclient" STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
 cp dropbearmulti ../artifacts
 
@@ -163,7 +163,7 @@ ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer.ko"
 
 modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
-#ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello.ko.test; ./hello.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mynull.ko.test; ./mynull.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myzero.ko.test; ./myzero.ko.test"
@@ -185,7 +185,7 @@ modules_build
 modules_copy
 modules_load
 modules_test
-#modules_unload
+modules_unload
 }
 
 if [ "$1" == "" ]; then
