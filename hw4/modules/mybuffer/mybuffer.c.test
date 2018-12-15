@@ -9,7 +9,7 @@
 #include <errno.h>
 #include <pthread.h>
 
-int fd, done,cool, rd, wr;
+int fd, done, raceend, rd, wr;
 char buf[100], racebuf1[32], racebuf2[32];
 
 char *teststr = "FilltheBufferFilltheBufferFilltheBuffer";
@@ -31,9 +31,8 @@ int main() {
     int s, retval;
     struct timespec ts;
     pthread_t t1, t2;
-    done, cool = 0;
+    done, raceend = 0;
     fd = open("/dev/mybuffer", O_RDWR);
-    printf("Open: %d\n", fd);
 
     if(fd <0) {
         return 1;
@@ -51,36 +50,11 @@ int main() {
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);
 
-    printf("Die alten tests laufen noch\n");
-
     //Loop until race occurs
     pthread_create(&t1, NULL, racecar1, &fd);
     pthread_create(&t2, NULL, racecar2, &fd);
-    printf("AMK\n");
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);  
-
-/*    while(1) {
-//	printf("oft\n");
-	retval = pthread_tryjoin_np(t1, NULL);
-	printf("1 -%d\n", retval);
-//	if(retval >= 0)
-//		break;
-	
-	retval = pthread_tryjoin_np(t2, NULL);
-//        if(retval >= 0)
-  //              break;
-printf("2 -%d\n", retval);
-    }*/
-
-    printf("AMK2\n");
-/*
-//    sleep(10);
-  //  pthread_kill(t1,9);
-   // pthread_kill(t2,9);
-    //pthread_kill(t3,9);
-*/
-
 
     return 0;
 }
@@ -120,26 +94,24 @@ void *mywrite2(void *fd) {
 }
 
 void *racecar1(void *fd) {
-    printf("racecar1 bruum\n");
     while(1) {
     	wr = write(*(int *)fd, race1, 32);
     	rd = read(*(int *)fd, racebuf1, 32);
-        if(strncmp(racebuf1, race1, 32) != 0 || cool == 1)
+        if(strncmp(racebuf1, race1, 32) != 0 || raceend == 1)
 		break;
     }
-    cool = 1;  
-    printf("Ich bin raus: AMK: %s\n", racebuf1);
+    raceend = 1;  
+    printf("Race occured: Thread1 with A's expect A's but read: %s\n", racebuf1);
 }
 
 void *racecar2(void *fd) {
-    printf("racecar2 bruum\n");
     while(1) {
         wr = write(*(int *)fd, race2, 32);
 
         rd = read(*(int *)fd, racebuf2, 32);
-	if(strncmp(racebuf2, race2, 32) != 0 || cool == 1)
+	if(strncmp(racebuf2, race2, 32) != 0 || raceend == 1)
                 break;
     }
-    cool = 1;
-    printf("Ich bin raus: BMK: %s\n", racebuf2);
+    raceend = 1;
+    printf("Race occured: Thread2 with B's expect B's but read: %s\n", racebuf2);
 }
