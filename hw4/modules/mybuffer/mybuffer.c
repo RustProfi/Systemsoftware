@@ -5,6 +5,7 @@
 #include <asm/uaccess.h>
 #include <linux/wait.h>
 #include <linux/slab.h> //alloc
+#include <linux/types.h>
 #define EOF (-1)
 #define BUFSIZE 32 * sizeof(char)
 
@@ -12,9 +13,9 @@ static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
 int i;
-char *buffer; 
+char *buffer;
 wait_queue_head_t wqueue;
-int daten_da;
+bool daten_da;
 
 static ssize_t driver_read(struct file *, char *, size_t, loff_t *) ;
 static ssize_t driver_write(struct file *, const char *, size_t, loff_t *);
@@ -49,7 +50,7 @@ static int __init ModInit(void)
     
     init_waitqueue_head(&wqueue);
     buffer = (char *) kmalloc(BUFSIZE, GFP_KERNEL);
-    daten_da = 0;
+    daten_da = false;
     return 0;
     
     free_cdev:
@@ -71,7 +72,7 @@ static void __exit ModExit(void)
     kobject_put(&driver_object->kobj);
     unregister_chrdev_region(template_dev_number, 1);
     kfree(buffer);
-    daten_da = 0;
+    daten_da = false;
     return;
 }
 
@@ -79,7 +80,7 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
         
     int not_copied, to_copy;
     
-    wait_event_interruptible(wqueue, daten_da == 1);
+    wait_event_interruptible(wqueue, daten_da);
     to_copy = min(BUFSIZE, count);
     not_copied = copy_to_user(user, buffer, to_copy);
     return to_copy - not_copied;
@@ -96,7 +97,7 @@ static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t co
     not_copied = copy_from_user(buffer, userbuf, to_copy);
     
     if(to_copy-not_copied > 0) {
-        daten_da = 1;
+        daten_da = true;
         wake_up_interruptible(&wqueue);
     }
     return to_copy-not_copied;
