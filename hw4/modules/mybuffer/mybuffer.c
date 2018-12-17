@@ -80,7 +80,9 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
         
     int not_copied, to_copy;
     
-    wait_event_interruptible(wqueue, daten_da);
+    if(wait_event_interruptible(wqueue, daten_da)){
+        return -ERESTARTSYS;
+    }
     to_copy = min(BUFSIZE, count);
     not_copied = copy_to_user(user, buffer, to_copy);
     return to_copy - not_copied;
