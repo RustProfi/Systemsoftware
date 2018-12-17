@@ -15,7 +15,7 @@ default:
 endif
 
 test:
-	$(CROSS_COMPILE)gcc -static -x c mybuffer.c.test -o mybuffer.ko.test
+	$(CROSS_COMPILE)gcc -static -pthread -x c mybuffer.c.test -o mybuffer.ko.test
 
 clean:
 	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order *.ko.test
