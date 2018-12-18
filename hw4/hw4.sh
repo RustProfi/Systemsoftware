@@ -76,6 +76,23 @@ rm initrd/bin/sysinfo
 rm initrd/bin/busybox
 rm initrd/bin/dropbearmulti
 rm sysinfo/sysinfo
+
+cd modules/hello_kworld/
+make clean
+cd ../simple_chardev/
+make clean
+cd ../openclose/
+make clean
+cd ../hello/
+make clean
+cd ../mynull/
+make clean
+cd ../myzero
+make clean
+cd ../mybuffer/
+make clean
+cd $BASEDIR
+
 }
 
 usage()
