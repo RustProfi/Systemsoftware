@@ -14,8 +14,8 @@ Because the development container runs a different linux version
 ## What does depmod do?
 Depmod creates a makefile-like dependency file
 ## Is it possible to the read from the device without opening it?
-No
+No, because the read and write call needs a file descriptor which is returned by open.
 ## How is the memory for your buffer allocated? When is it freed?
-Allocation happens on init. Freeing on exit
+Allocation happens on init. Freeing on exit.
 ## Which race conditions exist in this implementation? / What happens if more than one process use the buffer simultaneously?
-Static race condition.The elements in the buffer can be overidden by every thread because no locks exist.
+Static race condition.The elements in the buffer can be overidden by every thread at any time because no locks exist.
