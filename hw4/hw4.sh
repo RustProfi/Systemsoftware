@@ -57,6 +57,8 @@ cp "$libdir" lib
 
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
+
+modules_build
 }
 
 clean()
