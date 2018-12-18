@@ -1,10 +1,4 @@
-language: nix
-#cache:
-#  directories:
-#    - /nix
-#env:
-#  - LABSHELL_REV=master
-#before_script:
-#  - nix-env -iA labshell --argstr labshellExpressionsRemoteRev ${LABSHELL_REV} -f https://github.com/htwg-syslab/nix-expressions/archive/${LABSHELL_REV}.tar.gz
+language: c
+
 script:
   - ci/run-travis.sh

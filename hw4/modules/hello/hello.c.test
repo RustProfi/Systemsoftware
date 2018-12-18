@@ -1,0 +1,20 @@
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main() {
+    int fd;
+    ssize_t rd;
+    char buf[64];
+    
+    fd = open("/dev/hello", O_RDWR);
+    
+    rd = read(fd, buf, 63);
+
+    assert(strcmp(buf, "Hello, from grp5") == 0);    
+    return 0;
+}

@@ -1,0 +1,24 @@
+#!/bin/busybox ash
+busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin lib/modules
+busybox /bin/busybox --install -s
+cd lib
+cd modules
+mkdir $(uname -r)
+cd ../../
+busybox mount -t devtmpfs devtmpfs /dev
+busybox mount -t sysfs sysfs /sys
+busybox mount -t proc procfs /proc
+busybox mount -t tmpfs tmpfs /tmp 
+mkdir dev/pts
+busybox mount -t devpts devpts dev/pts
+
+./bin/sysinfo
+export LD_LIBRARY_PATH=/lib
+mkdir -pv etc/dropbear
+echo create ssh key
+bin/dropbearmulti dropbearkey -t rsa -s 1024 -f etc/dropbear/dropbear_rsa_host_key > etc/dropbear/dropbear_rsa_host_key_pub
+echo finish
+ifconfig eth0 10.0.2.15
+dropbearmulti dropbear -B -p 22
+busybox ash
+

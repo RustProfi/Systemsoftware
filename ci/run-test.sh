@@ -13,7 +13,6 @@ fi
 
 # run test in labshell sysoHWx
 export HW
-export LABSHELL_FLAVOR
-LABSHELL_FLAVOR="sysoHW${HW}"
-echo " found latest hw (hw${HW}), running tests in labshell ${LABSHELL_FLAVOR}..."
+
+echo " found latest hw (hw${HW}), running tests"
 "${CI_DIR}/run-test-labshell.sh"
