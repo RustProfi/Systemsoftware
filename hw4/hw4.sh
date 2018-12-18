@@ -100,36 +100,42 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR/modules/hello_kworld/
 make clean
 make
-#cd ../simple_chardev/
-#make clean
-#make
-#make test
-#cp simple_chardev.ko.test ../../artifacts/
-#cd ../openclose/
-#make clean
-#make
-#make test
-#cp openclose.ko.test ../../artifacts/
-#cd ../hello
-#make clean
-#make
-#make test
-#cp hello.ko.test ../../artifacts/
-#cd ../mynull
-#make clean
-#make
-#make test
-#cp mynull.ko.test ../../artifacts/
-#cd ../myzero
-#make clean
-#make
-#make test
-#cp myzero.ko.test ../../artifacts
+cd ../simple_chardev/
+make clean
+make
+make test
+cp simple_chardev.ko.test ../../artifacts/
+cp simple_chardev.ko ../../artifacts/
+cd ../openclose/
+make clean
+make
+make test
+cp openclose.ko.test ../../artifacts/
+cp openclose.ko ../../artifacts/
+cd ../hello
+make clean
+make
+make test
+cp hello.ko.test ../../artifacts/
+cp hello.ko ../../artifacts/
+cd ../mynull
+make clean
+make
+make test
+cp mynull.ko.test ../../artifacts/
+cp mynull.ko ../../artifacts/
+cd ../myzero
+make clean
+make
+make test
+cp myzero.ko.test ../../artifacts
+cp myzero.ko ../../artifacts
 cd ../mybuffer
 make clean
 make
 make test
 cp mybuffer.ko.test ../../artifacts
+cp mybuffer.ko ../../artifacts
 cd ../../
 }
 
