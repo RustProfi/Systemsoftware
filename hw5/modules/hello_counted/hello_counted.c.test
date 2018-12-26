@@ -1,0 +1,28 @@
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+
+int main() {
+	int fd, i;
+	ssize_t rd;
+	char buf[100];
+
+	fd = open("/dev/hello_counted", O_RDWR);
+	if(fd < 0){
+		perror("open: ");
+		return 1;
+	}
+	
+	for(i = 0; i < 10; i++) {
+	printf("%d\n",i);
+        rd = read(fd, buf,100);
+        printf("%s\n", buf);
+    }
+	
+	return 0;
+}

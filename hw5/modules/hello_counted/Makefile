@@ -14,5 +14,8 @@ default:
 	ARCH=$(KERNEL_ARCH) CROSS_COMPILE=$(CROSS_COMPILE) $(MAKE) -C $(KDIR) SUBDIRS=$(PWD) modules
 endif
 
+test:
+	$(CROSS_COMPILE)gcc -static -pthread -x c hello_counted.c.test -o hello_counted.ko.test
+
 clean:
-	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order
+	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order *.ko.test
