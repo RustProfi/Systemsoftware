@@ -3,7 +3,6 @@
 #include <linux/cdev.h>
 #include <linux/fs.h> /*contains alloc_chrdev_region*/
 #include <linux/device.h> /*device create etc*/ 
-#include <asm/errno.h>
 #include <asm/uaccess.h> /*copy to user*/
 #include <linux/slab.h> //kmalloc and kfree
 

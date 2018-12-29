@@ -95,61 +95,44 @@ else
 fi
 }
 
-modules_build(){
+modules_build() {
 BASEDIR=$(dirname "$0")
 cd $BASEDIR/modules/hello_counted/
 make clean
 make
-#cd ../simple_chardev/
-#make clean
-#make
-#make test
-#cp simple_chardev.ko.test ../../artifacts/
-#cd ../openclose/
-#make clean
-#make
-#make test
-#cp openclose.ko.test ../../artifacts/
-#cd ../hello
-#make clean
-#make
-#make test
-#cp hello.ko.test ../../artifacts/
-#cd ../mynull
-#make clean
-#make
-#make test
-#cp mynull.ko.test ../../artifacts/
-#cd ../myzero
-#make clean
-#make
-#make test
-#cp myzero.ko.test ../../artifacts
-cd ../mybuffer
+make test
+cp hello_counted.ko ../../artifacts/
+cp hello_counted.ko.test ../../artifacts/
+cd ../mykthread/
 make clean
 make
 make test
-cp mybuffer.ko.test ../../artifacts
+cp mykthread.ko ../../artifacts/
+cp mykthread.ko.test ../../artifacts/
+
 cd ../../
 }
 
 modules_copy(){
-#BASEDIR=$(dirname "$0")
-#cd $BASEDIR
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko" < modules/hello_counted/hello_counted.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko.test" < modules/hello_counted/hello_counted.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko" < modules/mykthread/mykthread.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko.test" < modules/mykthread/mykthread.ko.test
 }
 
 modules_load(){
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mykthread.ko"
 }
 
 modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello_counted.ko.test; ./hello_counted.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mykthread.ko.test; ./mykthread.ko.test"
 }
 
 modules_unload(){
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko.test"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mykthread.ko"
 }
 
 modules() {
