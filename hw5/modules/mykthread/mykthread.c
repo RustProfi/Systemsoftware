@@ -82,12 +82,11 @@ static int what_the_thread_does(void *data) {
         if(kthread_should_stop() == 1)
             break;
         timeout = HZ * 2;
-        timeout = wait_event_interruptible_timeout(wq, false, timeout);
+        timeout = wait_event_interruptible_timeout(wq, timeout == 0, timeout);
         
        if(timeout == -ERESTARTSYS)
            break;
     }
-    printk(KERN_ALERT "EXTRA LOL\n");
     complete_and_exit(&on_exit, 0);
 }
 
