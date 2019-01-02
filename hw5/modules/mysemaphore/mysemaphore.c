@@ -1,29 +1,27 @@
+#include <linux/init.h>
 #include <linux/module.h>
 #include <linux/cdev.h>
 #include <linux/fs.h> /*contains alloc_chrdev_region*/
 #include <linux/device.h> /*device create etc*/ 
-#include <asm/uaccess.h>
-#include <linux/random.h>
-#include <linux/vmalloc.h>
-//#include <linux/slab.h>
+#include <linux/semaphore.h>
 
 static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
+static DEFINE_SEMAPHORE(mysema);
+static wait_queue_head_t wq;
 
-static ssize_t driver_write(struct file *, const char *, size_t, loff_t *);
-static ssize_t driver_read(struct file *, char *, size_t, loff_t *) ;
+static int driver_open(struct inode *, struct file *);
+static void semaroutine(void);
 
 static struct file_operations fops = {
-    .read = driver_read,
-    .write = driver_write,
+    .open = driver_open,
 };
-
 
 static int __init ModInit(void)
 {
-    printk(KERN_ALERT "myzero init\n");
-    if(alloc_chrdev_region(&template_dev_number,0,1,"MyZero")<0)
+    printk(KERN_ALERT "mysemaphore init\n");
+    if(alloc_chrdev_region(&template_dev_number,0,1,"mysemaphore")<0)
         return -EIO;
     driver_object = cdev_alloc(); /*Anmldeobjekt reservieren */
     if(driver_object==NULL)
@@ -33,15 +31,16 @@ static int __init ModInit(void)
     if(cdev_add(driver_object, template_dev_number, 1) < 0) //Treiber anmelden
         goto free_cdev;
     /*Eintrag im Sysfs, damit Udev den Geräteeintrag erzeugt */
-    template_class = class_create(driver_object->owner,"myzerodrv");
+    template_class = class_create(driver_object->owner,"mysemaphoredrv");
     if(template_class == NULL)
         goto free_cdev;
     
-    if(device_create(template_class, NULL, template_dev_number, NULL, "%s", "myzero") == NULL){
+    if(device_create(template_class, NULL, template_dev_number, NULL, "%s", "mysemaphore") == NULL){
         class_destroy(template_class);
         goto free_cdev;
     }
     
+    init_waitqueue_head(&wq);
     return 0;
     
     free_cdev:
@@ -54,7 +53,7 @@ static int __init ModInit(void)
 
 static void __exit ModExit(void)
 {
-    printk(KERN_ALERT "myzero  kill\n");
+    printk(KERN_ALERT "mysemaphore kill\n");
     device_destroy(template_class, template_dev_number);
     
     class_destroy(template_class);
@@ -65,24 +64,27 @@ static void __exit ModExit(void)
     return;
 }
 
-static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
-	int not_copied, to_copy;
-	char *buf;
-	buf = (char *) vmalloc(count * sizeof(char));
-	if(buf == NULL){
-		printk(KERN_ALERT "Alloc Failed");
-	}
-	memset(buf,'\0', count);
-	to_copy = count;
-	to_copy = min(to_copy,(int) count);
-	not_copied = copy_to_user(user, buf, to_copy);
-	vfree(buf);
-	return to_copy - not_copied;
-
+static int driver_open(struct inode *geraetedatei, struct file *instanz){
+    if(down_trylock(&mysema) == 0) {
+        semaroutine();
+        return 0;
+    }
+    else {
+        printk(KERN_ALERT "critical section is busy :(\n");
+        while(1) {
+            if(down_timeout(&mysema, HZ/5) == 0) {
+                printk(KERN_ALERT "Finally :)\n");
+                semaroutine();
+                return 0;
+            }
+        }
+    }
 }
 
-static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t count, loff_t *offs) {
-    return count;
+static void semaroutine() {
+    unsigned long timeout = HZ *3;
+    wait_event_interruptible_timeout(wq, timeout == 0, timeout);
+    up(&mysema);
 }
 
 
@@ -91,5 +93,5 @@ module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Marno Janetzky, Gabriel Cmiel");
-MODULE_DESCRIPTION("Myzero");
-MODULE_SUPPORTED_DEVICE("myzero");
+MODULE_DESCRIPTION("mysemaphore implements a semaphore");
+MODULE_SUPPORTED_DEVICE("mysemaphore");

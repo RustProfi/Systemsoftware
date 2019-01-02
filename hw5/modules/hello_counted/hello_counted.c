@@ -3,13 +3,13 @@
 #include <linux/cdev.h>
 #include <linux/fs.h> /*contains alloc_chrdev_region*/
 #include <linux/device.h> /*device create etc*/ 
-#include <asm/errno.h>
 #include <asm/uaccess.h> /*copy to user*/
+#include <linux/slab.h> //kmalloc and kfree
 
 static dev_t template_dev_number;
 static struct cdev * driver_object;
 struct class *template_class;
-int i;
+int* hellocounter;
 
 static int driver_open(struct inode *, struct file *);
 static int driver_close(struct inode *, struct file *); 
@@ -24,8 +24,8 @@ static struct file_operations fops = {
 
 static int __init ModInit(void)
 {
-    printk(KERN_ALERT "hello init\n");
-    if(alloc_chrdev_region(&template_dev_number,0,1,"Hello")<0)
+    printk(KERN_ALERT "hello counted init\n");
+    if(alloc_chrdev_region(&template_dev_number,0,1,"Hello counted")<0)
         return -EIO;
     driver_object = cdev_alloc(); /*Anmldeobjekt reservieren */
     if(driver_object==NULL)
@@ -35,11 +35,11 @@ static int __init ModInit(void)
     if(cdev_add(driver_object, template_dev_number, 1) < 0) //Treiber anmelden
         goto free_cdev;
     /*Eintrag im Sysfs, damit Udev den Geräteeintrag erzeugt */
-    template_class = class_create(driver_object->owner,"hellodrv");
+    template_class = class_create(driver_object->owner,"hellocounteddrv");
     if(template_class == NULL)
         goto free_cdev;
     
-    if(device_create(template_class, NULL, template_dev_number, NULL, "%s", "hello") == NULL){
+    if(device_create(template_class, NULL, template_dev_number, NULL, "%s",  "hello_counted") == NULL){
         class_destroy(template_class);
         goto free_cdev;
     }
@@ -56,7 +56,7 @@ static int __init ModInit(void)
 
 static void __exit ModExit(void)
 {
-    printk(KERN_ALERT "hello kill\n");
+    printk(KERN_ALERT "hello counted kill\n");
     device_destroy(template_class, template_dev_number);
     
     class_destroy(template_class);
@@ -68,29 +68,44 @@ static void __exit ModExit(void)
 }
 
 static int driver_open(struct inode *geraetedatei, struct file *instanz){
-    return 0;
+    if(instanz->f_flags&O_RDWR || instanz->f_flags&O_RDONLY) { 
+        hellocounter = (int *) kmalloc(1 * sizeof(int), GFP_KERNEL);
+        *hellocounter = 0;
+        return 0;
+    }
+    else {
+        return -1;
+    }
 }
 
 static int driver_close(struct inode *geraetedatei, struct file *instanz) {
-    return 0;
+    if(instanz->f_flags&O_RDWR || instanz->f_flags&O_RDONLY) { 
+        kfree(hellocounter);
+        return 0;
+    }
+    else {
+        return -1;
+    }
 }
 
 static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_t *offset) {
-    int not_copied, to_copy;
-    char* msg = "Hello, from grp5";
-    
+    int not_copied, to_copy, wrotebytes;
+    char msg[100];
+
+    snprintf(msg, 100, "Hello, from grp5. You have read %d bytes so far.", *hellocounter);
+
     to_copy = strlen(msg)+1;
     to_copy = min(to_copy,(int) count);
     not_copied = copy_to_user(user, msg, to_copy);
-    return to_copy - not_copied;
+    wrotebytes = to_copy - not_copied;
+    *hellocounter += wrotebytes;
+    return wrotebytes;
 }
-
 
 module_init(ModInit);
 module_exit(ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Marno Janetzky, Gabriel Cmiel");
-MODULE_DESCRIPTION("Hello");
-MODULE_SUPPORTED_DEVICE("hello");
-
+MODULE_DESCRIPTION("Hello counted");
+MODULE_SUPPORTED_DEVICE("hello_counted");

@@ -15,7 +15,7 @@ default:
 endif
 
 test:
-	$(CROSS_COMPILE)gcc -static -x c myzero.c.test -o myzero.ko.test
+	$(CROSS_COMPILE)gcc -static -pthread -x c mykthread.c.test -o mykthread.ko.test
 
 clean:
 	rm -rf *.ko *.o *.mod.c .*.cmd .tmp_versions *.symvers *.order *.ko.test

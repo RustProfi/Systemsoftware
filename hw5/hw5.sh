@@ -5,12 +5,12 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-tar xf linux-4.11.tar.xz
-wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-tar xvjf busybox-1.26.2.tar.bz2
-wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-tar xvjf dropbear-2016.74.tar.bz2
+#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+#tar xf linux-4.11.tar.xz
+#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+#tar xvjf busybox-1.26.2.tar.bz2
+#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+#tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
 cp kernel/.config linux-4.11
@@ -21,15 +21,15 @@ mkdir artifacts
 
 #build
 cd linux-4.11
-make clean
-ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-cp arch/arm64/boot/Image.gz ../artifacts
+#make clean
+#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+#cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
-make clean
-ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-cp busybox ../initrd/bin
-cp busybox ../artifacts
+#make clean
+#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+#cp busybox ../initrd/bin
+#cp busybox ../artifacts
 
 cd ../dropbear-2016.74
 make clean
@@ -95,96 +95,62 @@ else
 fi
 }
 
-modules_build(){
+modules_build() {
 BASEDIR=$(dirname "$0")
-cd $BASEDIR/modules/hello_kworld/
-make clean
-make
-#cd ../simple_chardev/
-#make clean
-#make
-#make test
-#cp simple_chardev.ko.test ../../artifacts/
-#cd ../openclose/
-#make clean
-#make
-#make test
-#cp openclose.ko.test ../../artifacts/
-#cd ../hello
-#make clean
-#make
-#make test
-#cp hello.ko.test ../../artifacts/
-#cd ../mynull
-#make clean
-#make
-#make test
-#cp mynull.ko.test ../../artifacts/
-#cd ../myzero
-#make clean
-#make
-#make test
-#cp myzero.ko.test ../../artifacts
-cd ../mybuffer
+cd $BASEDIR/modules/hello_counted/
 make clean
 make
 make test
-cp mybuffer.ko.test ../../artifacts
+cp hello_counted.ko ../../artifacts/
+cp hello_counted.ko.test ../../artifacts/
+cd ../mykthread/
+make clean
+make
+make test
+cp mykthread.ko ../../artifacts/
+cp mykthread.ko.test ../../artifacts/
+cd ../mysemaphore/
+make clean
+make
+make test
+cp mysemaphore ../../artifacts/
+cp mysemaphore.ko.test ../../artifacts/
+
 cd ../../
 }
 
 modules_copy(){
-#BASEDIR=$(dirname "$0")
-#cd $BASEDIR
-ssh_call "cat > /lib/modules/\$(uname -r)/hello_kworld.ko" < modules/hello_kworld/hello_kworld.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko" < modules/simple_chardev/simple_chardev.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/simple_chardev.ko.test" < modules/simple_chardev/simple_chardev.ko.test
-ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko" < modules/openclose/openclose.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/openclose.ko.test" < modules/openclose/openclose.ko.test
-ssh_call "cat > /lib/modules/\$(uname -r)/hello.ko" < modules/hello/hello.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/hello.ko.test" < modules/hello/hello.ko.test
-ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko" < modules/mynull/mynull.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/mynull.ko.test" < modules/mynull/mynull.ko.test
-ssh_call "cat > /lib/modules/\$(uname -r)/myzero.ko" < modules/myzero/myzero.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/myzero.ko.test" < modules/myzero/myzero.ko.test
-ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer.ko" < modules/mybuffer/mybuffer.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer.ko.test" < modules/mybuffer/mybuffer.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko" < modules/hello_counted/hello_counted.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko.test" < modules/hello_counted/hello_counted.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko" < modules/mykthread/mykthread.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko.test" < modules/mykthread/mykthread.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko" < modules/mysemaphore/mysemaphore.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko.test" < modules/mysemaphore/mysemaphore.ko.test
 }
 
 modules_load(){
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_kworld.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/simple_chardev.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/openclose.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/mynull.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/myzero.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mykthread.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mysemaphore.ko"
 }
 
 modules_test(){
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x simple_chardev.ko.test; ./simple_chardev.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x openclose.ko.test; ./openclose.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello.ko.test; ./hello.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mynull.ko.test; ./mynull.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myzero.ko.test; ./myzero.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mybuffer.ko.test; ./mybuffer.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello_counted.ko.test; ./hello_counted.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mykthread.ko.test; ./mykthread.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test; ./mysemaphore.ko.test"
 }
 
 modules_unload(){
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_kworld.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/simple_chardev.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/openclose.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mynull.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/myzero.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mybuffer.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mykthread.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mysemaphore.ko"
 }
 
 modules() {
 modules_build
 modules_copy
 modules_load
-modules_test && modules_unload
+modules_test #&& modules_unload
 }
 
 if [ "$1" == "" ]; then
