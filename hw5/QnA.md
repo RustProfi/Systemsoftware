@@ -3,6 +3,8 @@ kmalloc, kcalloc(for arrays), kzalloc, krealloc, kmalloc_caches, kmalloc_index, 
 ## Which functions did you choose and why?
 I chose the standard kmalloc, because for a simple counter (which is an int and could be on stack) and something i never need to be bigger or smaller, the simplest is fine. To free kmalloc i use kfree.
 ## Which is the more accurate time source: jiffies or CPU cycles?
+CPU Cycles uses an high-resolution counter that uses a counter register that is steadily incremented on each clock cycle.
+Jiffies suffers from inaccuracies caused by missed or lost timer interrupts.
 ## How can you identify the kernel thread's PID using the ps utility?
 I can see the name of the thread in column command and simply look at the PID in column PID.
 ## Can your kernel thread receive and handle signals that were sent from userspace using kill?
