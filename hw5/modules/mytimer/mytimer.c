@@ -3,18 +3,30 @@
 #include <linux/timer.h>
 
 static struct timer_list mytimer;
-static unsigned long curr, prev, max, min;
+static unsigned long currj, prevj, maxj, minj;
+static cycles_t currc, prevc, maxc, minc;
+static u64 currn, prevn, maxn, minn;
 //static unsigned long max = 0;
 static void inc_count(unsigned long arg)
 {
-	curr = jiffies - prev;
-	max = max(curr,max);
-	min = min(curr,min);
-	prev = jiffies;
-	printk("Jiffies: (%ld), current: %lu, min: %lu, max: %lu",mytimer.expires, curr, min, max);
+	currj = jiffies - prevj;
+	maxj = max(currj,maxj);
+	minj = min(currj,minj);
+	prevj = jiffies;
+
+	currc = get_cycles() - prevc;
+	maxc = max(currc,maxc);
+	minc = min(currc,minc);
+	prevc = get_cycles();
+
+	currn = jiffies_to_nsecs(jiffies) - prevn;
+	maxn = max(currn,maxn);
+	minn = min(currn,minn);
+	prevn = jiffies_to_nsecs(jiffies);
+	printk("Jiffies: (%ld), current: (%ld), min: (%ld), max: (%ld)",mytimer.expires, currj, minj, maxj);
+	printk("CPU Cycles: (%llu), current: (%lu), min: (%lu), max: (%lu)",get_cycles(), currc, minc, maxc);
+	printk("Nanoseconds: (%llu), current: (%llu), min: (%llu), max: (%llu)",jiffies_to_nsecs(jiffies), currn, minn, maxn);
 	mod_timer(&mytimer,jiffies + (2*HZ));
-	//mytimer.expires =  jiffies + (2*HZ);
-	//add_timer(&mytimer);
 }
 
 static int __init ktimer_init(void)
@@ -23,10 +35,20 @@ static int __init ktimer_init(void)
 	mytimer.function = inc_count;
 	mytimer.data = 0;
 	mytimer.expires =  jiffies + (2*HZ);
-	min = jiffies;
-	curr = jiffies;
-	prev  = jiffies;
-	max = 0;
+	minj = jiffies;
+	currj = jiffies;
+	prevj  = jiffies;
+	maxj = 0;
+
+	minc = get_cycles();
+	currc = get_cycles();
+	prevc  = get_cycles();
+	maxc = 0;
+
+	minn = jiffies_to_nsecs(jiffies);
+	currn = jiffies_to_nsecs(jiffies);
+	prevn  = jiffies_to_nsecs(jiffies);
+	maxn = 0;
 	add_timer(&mytimer);
 	return 0;
 }
