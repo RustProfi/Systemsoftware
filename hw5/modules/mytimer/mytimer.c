@@ -2,42 +2,38 @@
 #include <linux/module.h>
 #include <linux/timer.h>
 
-static struct timer_list jifftime;
-//static struct timer_list cpu_cycles;
-//static struct timer_list nanoseconds;
-
-
+static struct timer_list mytimer;
+static unsigned long curr, prev, max, min;
+//static unsigned long max = 0;
 static void inc_count(unsigned long arg)
 {
-	printk("current inter-trigger duration (%ld)\n", jifftime.expires);
-	//printk("minimum inter-trigger duration (%ld)\n")
-	//printk("maximum inter-trigger duration ")
+	curr = jiffies - prev;
+	max = max(curr,max);
+	min = min(curr,min);
+	prev = jiffies;
+	printk("Jiffies: (%ld), current: %lu, min: %lu, max: %lu",mytimer.expires, curr, min, max);
+	mod_timer(&mytimer,jiffies + (2*HZ));
+	//mytimer.expires =  jiffies + (2*HZ);
+	//add_timer(&mytimer);
 }
 
 static int __init ktimer_init(void)
 {
-	init_timer(&jifftime);
-	timer_list jifftime =  {
-	.function = inc_count,
-	.data = 0,
-	.expires = jiffies + (2*HZ)
-	};
-	//jifftime.function = inc_count;
-	//jifftime.data = 0;
-	//jifftime.expires = jiffies + (2*HZ);
-	//init_timer(&cpu_cycles);
-	//init_timer(&nanoseconds);
-
-	//mytimer.function = inc_count;
-	//mytimer.data = 0;
-	//mytimer.expires = jiffies + (2*HZ);
-	add_timer(&jifftime);
+  init_timer(&mytimer);
+	mytimer.function = inc_count;
+	mytimer.data = 0;
+	mytimer.expires =  jiffies + (2*HZ);
+	min = jiffies;
+	curr = jiffies;
+	prev  = jiffies;
+	max = 0;
+	add_timer(&mytimer);
 	return 0;
 }
 
 static void __exit ktimer_exit(void)
 {
-	if(del_timer_sync(&jifftime)){
+	if(del_timer_sync(&mytimer)){
 		printk("Aktiver Timer deaktiviert\n");
 	}
 }
