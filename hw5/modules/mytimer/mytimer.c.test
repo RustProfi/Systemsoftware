@@ -10,25 +10,61 @@
 #include <pthread.h>
 #include <signal.h>
 
-void *tryopen(void *number) {
-    if(open("/dev/mysemaphore", O_RDWR) < 0) {
-        perror("open: ");
-    } else {
-        printf("Thread %d finally did it\n", *(int *)number);
+int succeed = 0;
+int fd, msgs = 0;
+ssize_t rd;
+char buf[10000];
+char * a = NULL;
+char * b = NULL;
+char * c = NULL;
+
+
+void *thetest(void *fd) {
+    while(msgs < 3 ) {
+        read(*(int *)fd, buf,10000);
+        a = strstr(buf, "Jiffies");
+        b = strstr(buf, "CPU Cycles");
+        c = strstr(buf, "Nanoseconds");
+        if(a != NULL & b != NULL & c != NULL)
+            msgs++;
+
+        a = NULL;
+        b = NULL;
+        c = NULL;
     }
+
+    succeed = 1;
 }
 
+
 int main() {
-    pthread_t t1, t2, t3;
-    int one = 1, two = 2, three = 3;
-    
-    pthread_create(&t1, NULL,tryopen, &one);
-    pthread_create(&t2, NULL,tryopen, &two);
-    pthread_create(&t3, NULL,tryopen, &three);
-    
-    pthread_join(t1, NULL);
-    pthread_join(t2, NULL);
-    pthread_join(t3, NULL);
-    
+    pthread_t t1;
+    int seconds = 0;
+
+    fd = open("/proc/kmsg", O_RDWR);
+    if(fd < 0){
+        perror("open: ");
+        return 1;
+    }
+
+    pthread_create(&t1, NULL, thetest, &fd);
+
+    while(seconds < 10) {
+        if(succeed == 1) {
+            pthread_join(t1, NULL);
+            printf("succeed\n");
+            return 0;
+        }
+        else {
+            sleep(1);
+            seconds++;
+        }
+    }
+
+    printf("thread test not succeed!\n");
+
+    if(pthread_kill(t1, SIGKILL) < 0)
+        printf("Kill did not work :(\n");
+
     return 0;
 }

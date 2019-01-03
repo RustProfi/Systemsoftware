@@ -121,40 +121,51 @@ make
 make test
 cp mytasklet.ko ../../artifacts/
 cp mytasklet.ko.test ../../artifacts/
+cd ../mytimer/
+make clean
+make
+make test
+cp mytimer.ko ../../artifacts
+cp mytimer.ko.test ../../artifacts
 
 cd ../../
 }
 
 modules_copy(){
-#ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko" < modules/hello_counted/hello_counted.ko
-#ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko.test" < modules/hello_counted/hello_counted.ko.test
-#ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko" < modules/mykthread/mykthread.ko
-#ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko.test" < modules/mykthread/mykthread.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko" < modules/hello_counted/hello_counted.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/hello_counted.ko.test" < modules/hello_counted/hello_counted.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko" < modules/mykthread/mykthread.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko.test" < modules/mykthread/mykthread.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko" < modules/mysemaphore/mysemaphore.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko.test" < modules/mysemaphore/mysemaphore.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/mytasklet.ko" < modules/mytasklet/mytasklet.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mytasklet.ko.test" < modules/mytasklet/mytasklet.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko" < modules/mytimer/mytimer.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko.test" < modules/mytimer/mytimer.ko.test
 }
 
 modules_load(){
-#ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_counted.ko"
 #ssh_call "busybox insmod /lib/modules/\$(uname -r)/mykthread.ko"
-ssh_call "busybox insmod /lib/modules/\$(uname -r)/mysemaphore.ko"
+#ssh_call "busybox insmod /lib/modules/\$(uname -r)/mysemaphore.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytasklet.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytimer.ko"
 }
 
 modules_test(){
-#ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello_counted.ko.test; ./hello_counted.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello_counted.ko.test; ./hello_counted.ko.test"
 #ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mykthread.ko.test; ./mykthread.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test; ./mysemaphore.ko.test"
+#ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test; ./mysemaphore.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytasklet.ko.test; ./mytasklet.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytimer.ko.test; ./mytimer.ko.test"
 }
 
 modules_unload(){
-#ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko"
-#ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mykthread.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mykthread.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mysemaphore.ko"
-ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mystasklet.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytasklet.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytimer.ko"
 }
 
 modules() {
