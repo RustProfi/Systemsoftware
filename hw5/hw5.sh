@@ -149,7 +149,7 @@ ssh_call "cat > /lib/modules/\$(uname -r)/mytasklet.ko.test" < modules/mytasklet
 ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko" < modules/mytimer/mytimer.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko.test" < modules/mytimer/mytimer.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.ko" < modules/myworkqueue/myworkqueue.ko
-ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.ko.test" < modules/myworkqueue/myworkqueue.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.sh" < modules/myworkqueue/myworkqueue.sh
 }
 
 modules_load(){
@@ -167,7 +167,7 @@ ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mykthread.ko.test; .
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test; ./mysemaphore.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytasklet.ko.test; ./mytasklet.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytimer.ko.test; ./mytimer.ko.test"
-ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myworkqueue.ko.test; ./myworkqueue.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myworkqueue.sh; ./myworkqueue.sh"
 }
 
 modules_unload(){
