@@ -5,12 +5,12 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-#tar xf linux-4.11.tar.xz
-#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-#tar xvjf busybox-1.26.2.tar.bz2
-#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-#tar xvjf dropbear-2016.74.tar.bz2
+wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+tar xf linux-4.11.tar.xz
+wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+tar xvjf busybox-1.26.2.tar.bz2
+wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
 cp kernel/.config linux-4.11
@@ -21,8 +21,8 @@ mkdir artifacts
 
 #build
 cd linux-4.11
-#make clean
-#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+make clean
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
@@ -133,6 +133,12 @@ make
 make test
 cp myworkqueue.ko ../../artifacts
 cp myworkqueue.ko.test ../../artifacts
+cd ../mybuffer_sync/
+make clean
+make
+make test
+cp mybuffer_sync.ko ../../artifacts/
+cp mybuffer_sync.ko.test ../../artifacts/
 
 cd ../../
 }
@@ -150,6 +156,8 @@ ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko" < modules/mytimer/mytimer.
 ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko.test" < modules/mytimer/mytimer.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.ko" < modules/myworkqueue/myworkqueue.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.sh" < modules/myworkqueue/myworkqueue.sh
+ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer_sync.ko" < modules/mybuffer_sync/mybuffer_sync.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer_sync.ko.test" < modules/mybuffer_sync/mybuffer_sync.ko.test
 }
 
 modules_load(){
@@ -159,6 +167,7 @@ ssh_call "busybox insmod /lib/modules/\$(uname -r)/mysemaphore.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytasklet.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytimer.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/myworkqueue.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer_sync.ko"
 }
 
 modules_test(){
@@ -168,6 +177,7 @@ ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test;
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytasklet.ko.test; ./mytasklet.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytimer.ko.test; ./mytimer.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myworkqueue.sh; ./myworkqueue.sh"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mybuffer_sync.ko.test; ./mybuffer_sync.ko.test"
 }
 
 modules_unload(){
@@ -177,6 +187,7 @@ ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mysemaphore.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytasklet.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytimer.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/myworkqueue.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mybuffer_sync.ko"
 }
 
 modules() {
