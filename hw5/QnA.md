@@ -9,8 +9,11 @@ Jiffies suffers from inaccuracies caused by missed or lost timer interrupts.
 I can see the name of the thread in column command and simply look at the PID in column PID.
 ## Can your kernel thread receive and handle signals that were sent from userspace using kill?
 ## What is the name of the workqueue in the process list?
+MyWorkqueue
 ## How do the time measurements of the workqueue compare to the one from the timer?
+Identicall apart from the first trigger. The CPU Cycle unit differs slightly.
 ## What problems can occur on module unload?
+Segmentation fault if a pending workqueue entry isn't cancelled.
 ## How would the design of mutual exclusion look like using a spinclock?
 ## Which implementation would you prefer, and why?
 ## Can close and unload unconditionally clean up the resources?
