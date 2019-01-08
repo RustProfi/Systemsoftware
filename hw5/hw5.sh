@@ -5,12 +5,12 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-#tar xf linux-4.11.tar.xz
-#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-#tar xvjf busybox-1.26.2.tar.bz2
-#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-#tar xvjf dropbear-2016.74.tar.bz2
+wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+tar xf linux-4.11.tar.xz
+wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+tar xvjf busybox-1.26.2.tar.bz2
+wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
 cp kernel/.config linux-4.11
@@ -21,15 +21,15 @@ mkdir artifacts
 
 #build
 cd linux-4.11
-#make clean
-#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-#cp arch/arm64/boot/Image.gz ../artifacts
+make clean
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
-#make clean
-#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
-#cp busybox ../initrd/bin
-#cp busybox ../artifacts
+make clean
+ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+cp busybox ../initrd/bin
+cp busybox ../artifacts
 
 cd ../dropbear-2016.74
 make clean
@@ -48,12 +48,12 @@ cd ../initrd
 
 #copy shared libs
 mkdir lib
-libdir="$(aarch64-linux-gnu-gcc -print-file-name="ld-linux-aarch64.so.1")" 
+libdir="$(aarch64-linux-gnu-gcc -print-file-name="ld-linux-aarch64.so.1")"
 cp "$libdir" lib
 libdir="$(aarch64-linux-gnu-gcc -print-file-name="libc.so.6")"
 cp "$libdir" lib
 libdir="$(aarch64-linux-gnu-gcc -print-file-name="libnss_files.so.2")"
-cp "$libdir" lib 
+cp "$libdir" lib
 
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
@@ -115,6 +115,24 @@ make
 make test
 cp mysemaphore.ko ../../artifacts/
 cp mysemaphore.ko.test ../../artifacts/
+cd ../mytasklet/
+make clean
+make
+make test
+cp mytasklet.ko ../../artifacts/
+cp mytasklet.ko.test ../../artifacts/
+cd ../mytimer/
+make clean
+make
+make test
+cp mytimer.ko ../../artifacts
+cp mytimer.ko.test ../../artifacts
+cd ../myworkqueue/
+make clean
+make
+make test
+cp myworkqueue.ko ../../artifacts
+cp myworkqueue.ko.test ../../artifacts
 cd ../mybuffer_sync/
 make clean
 make
@@ -132,6 +150,12 @@ ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko" < modules/mykthread/mykt
 ssh_call "cat > /lib/modules/\$(uname -r)/mykthread.ko.test" < modules/mykthread/mykthread.ko.test
 ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko" < modules/mysemaphore/mysemaphore.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mysemaphore.ko.test" < modules/mysemaphore/mysemaphore.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mytasklet.ko" < modules/mytasklet/mytasklet.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mytasklet.ko.test" < modules/mytasklet/mytasklet.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko" < modules/mytimer/mytimer.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/mytimer.ko.test" < modules/mytimer/mytimer.ko.test
+ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.ko" < modules/myworkqueue/myworkqueue.ko
+ssh_call "cat > /lib/modules/\$(uname -r)/myworkqueue.sh" < modules/myworkqueue/myworkqueue.sh
 ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer_sync.ko" < modules/mybuffer_sync/mybuffer_sync.ko
 ssh_call "cat > /lib/modules/\$(uname -r)/mybuffer_sync.ko.test" < modules/mybuffer_sync/mybuffer_sync.ko.test
 }
@@ -140,6 +164,9 @@ modules_load(){
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/hello_counted.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mykthread.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mysemaphore.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytasklet.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/mytimer.ko"
+ssh_call "busybox insmod /lib/modules/\$(uname -r)/myworkqueue.ko"
 ssh_call "busybox insmod /lib/modules/\$(uname -r)/mybuffer_sync.ko"
 }
 
@@ -147,6 +174,9 @@ modules_test(){
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x hello_counted.ko.test; ./hello_counted.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mykthread.ko.test; ./mykthread.ko.test"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mysemaphore.ko.test; ./mysemaphore.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytasklet.ko.test; ./mytasklet.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mytimer.ko.test; ./mytimer.ko.test"
+ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x myworkqueue.sh; ./myworkqueue.sh"
 ssh_call "cd ../lib/modules/\$(uname -r); busybox chmod u+x mybuffer_sync.ko.test; ./mybuffer_sync.ko.test"
 }
 
@@ -154,6 +184,9 @@ modules_unload(){
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/hello_counted.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mykthread.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mysemaphore.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytasklet.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mytimer.ko"
+ssh_call "busybox rmmod /lib/modules/\$(uname -r)/myworkqueue.ko"
 ssh_call "busybox rmmod /lib/modules/\$(uname -r)/mybuffer_sync.ko"
 }
 
