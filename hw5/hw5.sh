@@ -57,6 +57,8 @@ cp "$libdir" lib
 
 #create cpio
 find | cpio -L -v -o -H newc > ../artifacts/initrd.cpio
+
+modules_build
 }
 
 clean()
@@ -76,6 +78,23 @@ rm initrd/bin/sysinfo
 rm initrd/bin/busybox
 rm initrd/bin/dropbearmulti
 rm sysinfo/sysinfo
+rm -r lib
+
+cd modules/hello_counted/
+make clean
+cd ../mykthread/
+make clean
+cd ../mysemaphore/
+make clean
+cd ../mytasklet/
+make clean
+cd ../mytimer/
+make clean
+cd ../myworkqueue/
+make clean
+cd ../mybuffer_sync/
+make clean
+cd $BASEDIR
 }
 
 usage()
@@ -97,7 +116,8 @@ fi
 
 modules_build() {
 BASEDIR=$(dirname "$0")
-cd $BASEDIR/modules/hello_counted/
+cd $BASEDIR
+cd modules/hello_counted/
 make clean
 make
 make test
@@ -132,7 +152,7 @@ make clean
 make
 make test
 cp myworkqueue.ko ../../artifacts
-cp myworkqueue.ko.test ../../artifacts
+cp myworkqueue.sh ../../artifacts/myworkqueue.ko.test
 cd ../mybuffer_sync/
 make clean
 make

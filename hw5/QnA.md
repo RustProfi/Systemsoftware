@@ -20,3 +20,4 @@ Make use of asm/spinclock.h. It'd be very easy just use spin_lock and spin_unloc
 ## Which implementation would you prefer, and why?
 The Semaphore implementation. In this case we don't need a interrupt context, thus Semaphore is fine. In Addition the spinlock uses too much cpu power and should be used for short critical sections only.
 ## Can close and unload unconditionally clean up the resources?
+Yes.
