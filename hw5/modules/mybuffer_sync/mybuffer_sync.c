@@ -86,6 +86,7 @@ static ssize_t driver_read(struct file *instanz, char *user, size_t count, loff_
     }
     to_copy = min(BUFSIZE, count);
     not_copied = copy_to_user(user, buffer, to_copy);
+    up(&mysema);
     return to_copy - not_copied;
 }
 
@@ -100,7 +101,6 @@ static ssize_t driver_write(struct file *instanz, const char *userbuf, size_t co
     while(1) {
         if(down_timeout(&mysema, HZ) == 0) {
             not_copied = copy_from_user(buffer, userbuf, to_copy);
-            up(&mysema);
             break;
         }
     }

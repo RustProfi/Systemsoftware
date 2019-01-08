@@ -194,7 +194,7 @@ modules() {
 modules_build
 modules_copy
 modules_load
-modules_test #&& modules_unload
+modules_test && modules_unload
 }
 
 if [ "$1" == "" ]; then

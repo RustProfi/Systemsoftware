@@ -12,7 +12,7 @@
 
 int fd, raceend, retval;
 char buf[100], racebuf1[32], racebuf2[32];
-pthread_t t1,t2;
+pthread_t t1,t2,t3;
 
 char *teststr = "FilltheBufferFilltheBufferFilltheBuffer";
 char *bytestr = "ThisIsA32ByteString:DDDDDDDDDDDD";
@@ -22,6 +22,7 @@ char *race2 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
 void *onlyread(void *);
 void *racecar1(void *);
 void *racecar2(void *);
+void *thisIsTheEnd(void *);
 
 int main() {
 	raceend = 0;
@@ -48,8 +49,10 @@ int main() {
     //Loop until race occurs
     pthread_create(&t1, NULL, racecar1, &fd);
     pthread_create(&t2, NULL, racecar2, &fd);
+    pthread_create(&t3, NULL, thisIsTheEnd, NULL);
     pthread_join(t1, NULL);
     pthread_join(t2, NULL);  
+    pthread_join(t3, NULL);
 
     return 0;
 }
@@ -84,4 +87,10 @@ void *racecar2(void *fd) {
     if(strncmp(racebuf2,race2,32) != 0){
         printf("Race occured: Thread2 with B's expects B's but read: %s\n", racebuf2);
     }
+}
+
+void *thisIsTheEnd(void *fd) {
+    sleep(10);
+    raceend = 1;
+    printf("Stopped, because no race condition occured.\n");
 }

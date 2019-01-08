@@ -8,6 +8,7 @@ Jiffies suffers from inaccuracies caused by missed or lost timer interrupts.
 ## How can you identify the kernel thread's PID using the ps utility?
 I can see the name of the thread in column command and simply look at the PID in column PID.
 ## Can your kernel thread receive and handle signals that were sent from userspace using kill?
+Yes, but it listens to signal 15 (terminate) only, because we allowed this via allow_signal function.
 ## What is the name of the workqueue in the process list?
 MyWorkqueue
 ## How do the time measurements of the workqueue compare to the one from the timer?
@@ -15,5 +16,7 @@ Identicall apart from the first trigger. The CPU Cycle unit differs slightly.
 ## What problems can occur on module unload?
 Segmentation fault if a pending workqueue entry isn't cancelled.
 ## How would the design of mutual exclusion look like using a spinclock?
+Make use of asm/spinclock.h. It'd be very easy just use spin_lock and spin_unlock to protect the critical area.
 ## Which implementation would you prefer, and why?
+The Semaphore implementation. In this case we don't need a interrupt context, thus Semaphore is fine. In Addition the spinlock uses too much cpu power and should be used for short critical sections only.
 ## Can close and unload unconditionally clean up the resources?
