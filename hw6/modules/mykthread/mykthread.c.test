@@ -1,0 +1,66 @@
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <time.h>
+#include <pthread.h>
+#include <signal.h>
+
+int succeed = 0;
+int fd, msgs = 0;
+ssize_t rd;
+char buf[10000];
+char * str = NULL;
+
+
+void *thetest(void *fd) {
+    while(msgs < 3 ) {
+        rd = read(*(int *)fd, buf,10000);
+        printf("read: %d\n", rd);
+        str = strstr(buf, "A message XD");
+        
+        if(str != NULL) 
+            msgs++;
+        
+        str = NULL;
+    }
+    
+    succeed = 1;
+}
+
+
+int main() {
+    pthread_t t1;
+    int seconds = 0;
+    
+    fd = open("/proc/kmsg", O_RDWR);
+    if(fd < 0){
+        perror("open: ");
+        return 1;
+    }
+    
+    pthread_create(&t1, NULL, thetest, &fd);
+    
+    while(seconds < 10) {
+        if(succeed == 1) {
+            pthread_join(t1, NULL);
+            printf("succeed\n");
+            return 0;
+        }
+        else {
+            sleep(1);
+            seconds++;
+        }
+    }
+    
+    printf("thread test not succeed!\n");
+    
+    if(pthread_kill(t1, SIGKILL) < 0)
+        printf("Kill did not work :(\n");
+    
+    return 0;
+}
