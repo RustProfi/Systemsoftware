@@ -1,0 +1,87 @@
+#define _GNU_SOURCE
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <assert.h>
+#include <stdio.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <pthread.h>
+#include <stdint.h>
+
+int fd, raceend, retval;
+char buf[100], racebuf1[32], racebuf2[32];
+pthread_t t1,t2;
+
+char *teststr = "FilltheBufferFilltheBufferFilltheBuffer";
+char *bytestr = "ThisIsA32ByteString:DDDDDDDDDDDD";
+char *race1 = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+char *race2 = "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB";
+
+void *onlyread(void *);
+void *racecar1(void *);
+void *racecar2(void *);
+
+int main() {
+	raceend = 0;
+
+	fd = open("/dev/mybuffer_sync", O_RDWR);
+	if(fd < 0) {
+		perror("open: ");
+		return 1;
+	}
+	pthread_create(&t1, NULL, onlyread, &fd);
+	write(fd,teststr, 50);
+        pthread_join(t1, NULL);
+	//read full buffer
+	if(read(fd, buf, 100) < 0){
+		perror("full_buffer read: ");
+		return 1;
+	}
+	//write to full buffer
+	if(write(fd,teststr, 50) < 0) {
+		perror("full_buffer write: ");
+		return 1;
+	}
+
+    //Loop until race occurs
+    pthread_create(&t1, NULL, racecar1, &fd);
+    pthread_create(&t2, NULL, racecar2, &fd);
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);  
+
+    return 0;
+}
+
+void *onlyread(void *fd) {
+    if(read(*(int *)fd, buf, 100) < 0){
+        printf("Thread errno: %d\n",errno);
+    }
+}
+
+void *racecar1(void *fd) {
+    while(1) {
+    	write(*(int *)fd, race1, 32);
+    	read(*(int *)fd, racebuf1, 32);
+        if(strncmp(racebuf1, race1, 32) != 0 || raceend == 1)
+		break;
+    }
+    raceend = 1;
+    if(strncmp(racebuf1,race1,32) != 0) {  
+	    printf("Race occured: Thread1 with A's expects B's but read: %s\n", racebuf1);
+    }
+}
+
+void *racecar2(void *fd) {
+    while(1) {
+        write(*(int *)fd, race2, 32);
+        read(*(int *)fd, racebuf2, 32);
+	if(strncmp(racebuf2, race2, 32) != 0 || raceend == 1)
+                break;
+    }
+    raceend = 1;
+    if(strncmp(racebuf2,race2,32) != 0){
+        printf("Race occured: Thread2 with B's expects B's but read: %s\n", racebuf2);
+    }
+}
