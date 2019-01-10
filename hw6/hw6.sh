@@ -5,12 +5,12 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-tar xf linux-4.11.tar.xz
-wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-tar xvjf busybox-1.26.2.tar.bz2
-wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-tar xvjf dropbear-2016.74.tar.bz2
+#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+#tar xf linux-4.11.tar.xz
+#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+#tar xvjf busybox-1.26.2.tar.bz2
+#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+#tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
 cp kernel/.config linux-4.11
@@ -21,21 +21,21 @@ mkdir artifacts
 
 #build
 cd linux-4.11
-make clean
-ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+#make clean
+#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp arch/arm64/boot/Image.gz ../artifacts
 
 cd ../busybox-1.26.2
-make clean
-ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
+#make clean
+#ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- make -j5
 cp busybox ../initrd/bin
 cp busybox ../artifacts
 
 cd ../dropbear-2016.74
-make clean
-./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --disable-zlib --enable-openpty --host=aarch64-unknown-linux-gnu CC=aarch64-linux-gnu-gcc
-sed -i 's/22/22222/g' options.h
-make PROGRAMS="dropbear scp dropbearkey dbclient" STATIC=1 MULTI=1
+#make clean
+#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx --disable-zlib --enable-openpty --host=aarch64-unknown-linux-gnu CC=aarch64-linux-gnu-gcc
+#sed -i 's/22/22222/g' options.h
+#make PROGRAMS="dropbear scp dropbearkey dbclient" STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
 cp dropbearmulti ../artifacts
 
@@ -44,7 +44,10 @@ make
 cp sysinfo ../initrd/bin
 cp sysinfo ../artifacts
 
-cd ../initrd
+cd ..
+#./oatppbuilder.sh
+
+cd initrd
 
 #copy shared libs
 mkdir lib

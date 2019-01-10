@@ -1,0 +1,6 @@
+[submodule "hw6/initrd/lib/oatpp"]
+	path = hw6/initrd/lib/oatpp
+	url = https://github.com/oatpp/oatpp
+[submodule "hw6/lib/oatpp"]
+	path = hw6/lib/oatpp
+	url = https://github.com/oatpp/oatpp
