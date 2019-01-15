@@ -99,7 +99,7 @@ usage()
 }
 
 qemu(){
-qemu-system-aarch64 -m 64 -smp 2 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image.gz -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22 -device virtio-net,netdev=mynet0
+qemu-system-aarch64 -m 64 -smp 2 -M virt -cpu cortex-a57 -nographic -kernel ./artifacts/Image.gz -append console=ttyAMA0 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22,hostfwd=tcp::8001-:8001 -device virtio-net,netdev=mynet0
 }
 
 ssh_call(){
