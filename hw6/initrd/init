@@ -22,5 +22,6 @@ ifconfig eth0 10.0.2.15
 dropbearmulti dropbear -B -p 22
 #/bin/./run_app
 echo webserver started
+./bin/easy
 busybox ash
 
