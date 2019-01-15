@@ -44,6 +44,14 @@ make
 cp sysinfo ../initrd/bin
 cp sysinfo ../artifacts
 
+cd ../easy_webserver
+make
+cp easy ../initrd/bin
+cp easy ../artifacts
+
+#initialize submodule :D
+git submodule update --init --recursive
+
 cd ..
 #./oatppbuilder.sh
 
@@ -78,7 +86,11 @@ rm -r artifacts
 rm initrd/bin/sysinfo
 rm initrd/bin/busybox
 rm initrd/bin/dropbearmulti
-rm sysinfo/sysinfo
+
+cd sysinfo
+make clean
+cd ../easy_webserver
+make clean
 }
 
 usage()
