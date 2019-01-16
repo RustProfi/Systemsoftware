@@ -1,10 +1,6 @@
 #!/bin/busybox ash
-busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin lib/modules
+busybox mkdir sys proc tmp usr usr/bin/ sbin usr/sbin
 busybox /bin/busybox --install -s
-cd lib
-cd modules
-mkdir $(uname -r)
-cd ../../
 busybox mount -t devtmpfs devtmpfs /dev
 busybox mount -t sysfs sysfs /sys
 busybox mount -t proc procfs /proc
@@ -20,8 +16,7 @@ bin/dropbearmulti dropbearkey -t rsa -s 1024 -f etc/dropbear/dropbear_rsa_host_k
 echo finish
 ifconfig eth0 10.0.2.15
 dropbearmulti dropbear -B -p 22
-#/bin/./run_app
 echo webserver started
-./bin/easy
+./bin/easy&
 busybox ash
 
