@@ -52,6 +52,23 @@ public:
         
         return createResponse(Status::CODE_200, ("counter: "+countS).c_str());
     }
+    
+    int memcount = 0;
+    
+    ENDPOINT("GET", "/MEMcounter", memcounter) {
+        return createResponse(Status::CODE_200, ("counter: " + to_string(memcount++)).c_str());
+    }
+    
+    int pc = 0;
+    ENDPOINT("GET", "/DICKcount", pcounter) {
+        pc++;
+        string dick = "8";
+        for(int i = 0; i < pc; i++) {
+            dick.append("=");
+        }
+        dick.append("D");
+        return createResponse(Status::CODE_200, (dick).c_str());
+    }
     /* put your endpoints here */
     
     /**
