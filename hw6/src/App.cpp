@@ -1,13 +1,22 @@
+#include "controller/MyController.hpp"
+#include "AppComponent.hpp"
 #include "Logger.hpp"
 #include "../lib/oatpp/core/base/Environment.hpp"
 #include <iostream>
-#include "AppComponent.hpp"
 #include "../lib/oatpp/network/server/Server.hpp"
 
 void run() {
   // Register AppComponents in the Environment
   // Components will be unregistered once method run() return
   AppComponent components;
+  
+  auto router = components.httpRouter.getObject();
+
+  // create controller
+  auto myController = MyController::createShared();
+
+  // add all endpoints of controller to router
+  myController->addEndpointsToRouter(router);
 
   // create server which passes connections retrieved from ConnectionProvider to ConnectionHandler
   oatpp::network::server::Server server(components.serverConnectionProvider.getObject(),

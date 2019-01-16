@@ -1,4 +1,4 @@
-clang++ -march=armv8-a -target aarch64-linux-gnu \
+clang++  -std=gnu++11 \
 -pthread \
 `find "./lib/oatpp/" -type f -name *.cpp` \
 `find "./src/" -type f -name *.cpp` \
@@ -9,6 +9,6 @@ clang++ -march=armv8-a -target aarch64-linux-gnu \
 -D OATPP_DISABLE_ENV_OBJECT_COUNTERS \
 -O2 \
 -Wall \
--static -o initrd/bin/run_app
+-o initrd/bin/run_app
 
 chmod +x initrd/bin/run_app
