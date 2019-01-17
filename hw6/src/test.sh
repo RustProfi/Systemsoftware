@@ -1,0 +1,23 @@
+#!/bin/bash
+
+START=$SECONDS
+counter=1
+while [ $counter -le 10000 ]
+do
+curl  -s 127.0.0.1:8000/FScounter > /dev/null
+((counter++))
+done
+ELAPSED=$(($SECONDS - $START))
+echo "FScounter:"
+echo $ELAPSED
+
+START=$SECONDS
+counter=1
+while [ $counter -le 10000 ]
+do
+curl  -s 127.0.0.1:8000/MEMcounter > /dev/null
+((counter++))
+done
+ELAPSED=$(($SECONDS - $START))
+echo "MEMcounter:"
+echo $ELAPSED
