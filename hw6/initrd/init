@@ -16,7 +16,8 @@ bin/dropbearmulti dropbearkey -t rsa -s 1024 -f etc/dropbear/dropbear_rsa_host_k
 echo finish
 ifconfig eth0 10.0.2.15
 dropbearmulti dropbear -B -p 22
-echo webserver started
+echo webservers started
 ./bin/easy&
+./bin/complexserver&
 busybox ash
 

@@ -21,20 +21,26 @@ cp dropbear/options.h dropbear-2016.74
 mkdir artifacts
 mkdir lib
 mkdir src
+./oatppbuilder.sh
 cd lib
 git submodule add https://github.com/oatpp/oatpp
 git submodule update --init --recursive
 
 #build
 cd ../linux-4.11
+#make clean
 #make -j5
 cp arch/x86_64/boot/bzImage ../artifacts
+
 cd ../busybox-1.26.2
+#make clean
 #make -j5
 cp busybox ../initrd/bin
+cp busybox ../artifacts
 
 cd ../dropbear-2016.74
-#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx
+#make clean
+#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx -host=x86_64-linux-gnu
 #sed -i 's/22/22222/g' options.h
 #make STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
@@ -46,11 +52,9 @@ cp sysinfo ../initrd/bin
 cp sysinfo ../artifacts
 
 cd ../easy_webserver
-make clean
 make
 cp easy ../initrd/bin
 cp easy ../artifacts
-
 
 cd ../initrd
 
