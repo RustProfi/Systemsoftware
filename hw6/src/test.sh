@@ -1,8 +1,8 @@
-#!/bin/bash
-
+#!/bin/sh
+echo test started
 START=$SECONDS
 counter=1
-while [ $counter -le 10000 ]
+for i in $(seq 1 10000)
 do
 curl  -s 127.0.0.1:8000/FScounter > /dev/null
 ((counter++))
@@ -13,7 +13,7 @@ echo $ELAPSED
 
 START=$SECONDS
 counter=1
-while [ $counter -le 10000 ]
+for i in $(seq 1 10000)
 do
 curl  -s 127.0.0.1:8000/MEMcounter > /dev/null
 ((counter++))

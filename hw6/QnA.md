@@ -1,3 +1,5 @@
+##Which counter is faster?
+MEMcounter is slightly faster. FScounter took 117s and MEMcounter 111s.
 ## What do the both mentioned commandline options do?
 "set architecture aarch64" sets current target architecture
 "target remote tcp:127.0.0.1:1234" connects gdb to qemu through qemu's gdb server on port 1234 

@@ -9,6 +9,6 @@ clang++  -std=gnu++11 \
 -D OATPP_DISABLE_ENV_OBJECT_COUNTERS \
 -O2 \
 -Wall \
--o initrd/bin/run_app
+-o initrd/bin/complexserver
 
-chmod +x initrd/bin/run_app
+chmod +x initrd/bin/complexserver

@@ -17,7 +17,6 @@ echo finish
 ifconfig eth0 10.0.2.15
 dropbearmulti dropbear -B -p 22
 echo webservers started
-./bin/easy&
 ./bin/complexserver&
+./bin/easy&
 busybox ash
-

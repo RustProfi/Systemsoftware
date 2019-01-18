@@ -6,15 +6,15 @@ BASEDIR=$(dirname "$0")
 cd $BASEDIR
 
 #Download
-#wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
-#tar xf linux-4.11.tar.xz
-#wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
-#tar xvjf busybox-1.26.2.tar.bz2
-#wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
-#tar xvjf dropbear-2016.74.tar.bz2
+wget "https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.11.tar.xz"
+tar xf linux-4.11.tar.xz
+wget "http://busybox.net/downloads/busybox-1.26.2.tar.bz2"
+tar xvjf busybox-1.26.2.tar.bz2
+wget "https://matt.ucc.asn.au/dropbear/releases/dropbear-2016.74.tar.bz2"
+tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
-#cp kernel/.config linux-4.11
+cp kernel/.config linux-4.11
 cp busybox/.config busybox-1.26.2
 cp dropbear/options.h dropbear-2016.74
 
@@ -27,22 +27,22 @@ git submodule add https://github.com/oatpp/oatpp
 git submodule update --init --recursive
 
 #build
-#cd ../linux-4.11
-#make clean
-#make -j5
+cd ../linux-4.11
+make clean
+make -j5
 cp arch/x86_64/boot/bzImage ../artifacts
 
 cd ../busybox-1.26.2
-#make clean
-#make -j5
+make clean
+make -j5
 cp busybox ../initrd/bin
 cp busybox ../artifacts
 
 cd ../dropbear-2016.74
-#make clean
-#./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx -host=x86_64-linux-gnu
-#sed -i 's/22/22222/g' options.h
-#make STATIC=1 MULTI=1
+make clean
+./configure --disable-shadow --disable-lastlog --disable-syslog --disable-wtmp --disable-wtmpx --disable-utmpx -host=x86_64-linux-gnu
+sed -i 's/22/22222/g' options.h
+make STATIC=1 MULTI=1
 cp dropbearmulti ../initrd/bin
 cp dropbearmulti ../artifacts
 
@@ -56,17 +56,18 @@ make
 cp easy ../initrd/bin
 cp easy ../artifacts
 
+cp ../src/test.sh ../initrd/bin
+
 cd ../initrd
 
 #copy shared libs
 mkdir lib
+mkdir lib64
 libdir="$(gcc -print-file-name="ld-linux-x86-64.so.2")"
-cp "$libdir" lib
+cp "$libdir" lib64
 libdir="$(gcc -print-file-name="libc.so.6")"
 cp "$libdir" lib
 libdir="$(gcc -print-file-name="libnss_files.so.2")"
-cp "$libdir" lib
-libdir="$(gcc -print-file-name="linux-vdso.so.1")"#
 cp "$libdir" lib
 libdir="$(gcc -print-file-name="libstdc++.so.6")"
 cp "$libdir" lib
@@ -75,6 +76,8 @@ cp "$libdir" lib
 libdir="$(gcc -print-file-name="libgcc_s.so.1")"
 cp "$libdir" lib
 libdir="$(gcc -print-file-name="libpthread.so.0")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="ld-linux-x86-64.so.2")"
 cp "$libdir" lib
 
 #create cpio
@@ -110,7 +113,7 @@ usage()
 }
 
 qemu(){
-qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22,hostfwd=tcp::8001-:8001 -device virtio-net,netdev=mynet0
+qemu-system-x86_64 -m 64 -nographic -kernel ./artifacts/bzImage -append console=8250 -initrd ./artifacts/initrd.cpio -netdev user,id=mynet0,hostfwd=tcp::22222-:22,hostfwd=tcp::8001-:8001,hostfwd=tcp::8000-:8000 -device virtio-net,netdev=mynet0
 }
 
 ssh_call(){
@@ -120,6 +123,13 @@ else
 	ssh -o StrictHostKeyChecking=no root@localhost -p 222222 "${1}" 
 fi
 }
+
+test(){
+BASEDIR=$(dirname "$0")
+cd $BASEDIR/src
+./test.sh
+}
+
 
 if [ "$1" == "" ]; then
 	echo "Building all artifacts"
@@ -133,6 +143,8 @@ else
 		"ssh_cmd" )
 ssh_call "$2"
 
+				;;
+		"test" )	test
 				;;
 		* )		usage
 				exit 1
