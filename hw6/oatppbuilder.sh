@@ -1,3 +1,6 @@
+BASEDIR=$(dirname "$0")
+cd $BASEDIR/hw6
+
 clang++  -std=gnu++11 \
 -pthread \
 `find "./lib/oatpp/" -type f -name *.cpp` \
@@ -12,3 +15,5 @@ clang++  -std=gnu++11 \
 -o initrd/bin/complexserver
 
 chmod +x initrd/bin/complexserver
+
+cd ..

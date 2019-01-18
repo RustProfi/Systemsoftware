@@ -96,6 +96,7 @@ rm  busybox-1.26.2.tar.bz2
 rm -r dropbear-2016.74
 rm dropbear-2016.74.tar.bz2
 rm -r initrd/lib
+rm -r initrd/lib64
 rm -r artifacts
 rm initrd/bin/*
 
