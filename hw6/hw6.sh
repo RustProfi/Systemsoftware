@@ -14,7 +14,7 @@ cd $BASEDIR
 #tar xvjf dropbear-2016.74.tar.bz2
 
 #Copy configs
-cp kernel/.config linux-4.11
+#cp kernel/.config linux-4.11
 cp busybox/.config busybox-1.26.2
 cp dropbear/options.h dropbear-2016.74
 
@@ -27,7 +27,7 @@ git submodule add https://github.com/oatpp/oatpp
 git submodule update --init --recursive
 
 #build
-cd ../linux-4.11
+#cd ../linux-4.11
 #make clean
 #make -j5
 cp arch/x86_64/boot/bzImage ../artifacts
@@ -65,6 +65,16 @@ cp "$libdir" lib
 libdir="$(gcc -print-file-name="libc.so.6")"
 cp "$libdir" lib
 libdir="$(gcc -print-file-name="libnss_files.so.2")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="linux-vdso.so.1")"#
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libstdc++.so.6")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libm.so.6")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libgcc_s.so.1")"
+cp "$libdir" lib
+libdir="$(gcc -print-file-name="libpthread.so.0")"
 cp "$libdir" lib
 
 #create cpio
